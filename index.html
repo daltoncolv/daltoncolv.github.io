@@ -7,23 +7,64 @@
             background-color: black;
             color: #FFD700; /* Soft golden color */
             display: flex;
-            justify-content: flex-start; /* Align items to the top */
-            align-items: center;
+            justify-content: center;
+            align-items: flex-start;
             height: 100vh;
             margin: 0;
             flex-direction: column;
-            padding-top: 20px; /* Add padding to control the distance from the top */
+            padding-top: 20px;
         }
         h1 {
             text-align: center;
-            margin: 0; /* Remove any default margin */
+            margin-top: 20px;
         }
     </style>
+    <script>
+        // Function to save data to Local Storage
+        function saveData() {
+            var data = document.getElementById('data').value;
+            if(data) {
+                // Get existing data
+                var existingData = JSON.parse(localStorage.getItem('fitnessData')) || [];
+                // Add new data
+                existingData.push(data);
+                // Save back to Local Storage
+                localStorage.setItem('fitnessData', JSON.stringify(existingData));
+                // Clear the input field
+                document.getElementById('data').value = '';
+                // Update display
+                displayData();
+            }
+        }
+
+        // Function to display data from Local Storage
+        function displayData() {
+            var displayArea = document.getElementById('display');
+            var data = JSON.parse(localStorage.getItem('fitnessData')) || [];
+            displayArea.innerHTML = '';
+            data.forEach(function(item, index) {
+                var listItem = document.createElement('li');
+                listItem.textContent = item;
+                displayArea.appendChild(listItem);
+            });
+        }
+
+        // Load data when the page is loaded
+        window.onload = displayData;
+    </script>
 </head>
 <body>
     <h1>Fitness Pal</h1>
+    <form onsubmit="saveData(); return false;">
+        <label for="data">Enter your fitness data:</label>
+        <input type="text" id="data" name="data">
+        <button type="submit">Save Data</button>
+    </form>
+    <h2>Saved Data:</h2>
+    <ul id="display"></ul>
 </body>
 </html>
+
 
 
 
