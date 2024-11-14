@@ -11,9 +11,11 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            flex-direction: column;
         }
         h1 {
             text-align: center;
+            margin-top: 50px; /* Adjust this value to raise or lower the header */
         }
     </style>
 </head>
