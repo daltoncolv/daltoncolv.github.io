@@ -8,43 +8,56 @@
             color: #FFD700; /* Soft golden color */
             display: flex;
             justify-content: flex-start; /* Align content to the top */
-            align-items: flex-start;
+            align-items: center; /* Center content horizontally */
             height: 100vh;
             margin: 0;
-            padding: 20px; /* Added padding to move content inwards slightly */
+            padding: 0; /* Remove padding */
             flex-direction: column;
         }
         h1 {
             text-align: center;
+            width: 100%; /* Ensure the h1 takes the full width to be centered */
             margin-top: 0; /* Set to 0 to remove extra space */
+            padding-top: 20px; /* Add padding to move it slightly down from the top if needed */
         }
-        .exercise-list {
-            list-style-type: none; /* Remove default list style */
-            padding: 0;
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive grid columns */
+            gap: 20px; /* Space between grid items */
+            width: 90%; /* Adjust width as needed */
+            margin: 20px auto; /* Center the grid container */
         }
-        .exercise-list li {
-            margin-bottom: 10px; /* Space between list items */
+        .grid-item {
+            background-color: #333; /* Background color for grid items */
+            padding: 20px; /* Padding inside grid items */
+            border-radius: 10px; /* Rounded corners for grid items */
+            text-align: center; /* Center content inside grid items */
+        }
+        .grid-item img {
+            max-width: 100%;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
     <h1>Fitness Pal</h1>
-    <ul class="exercise-list">
-        <li><input type="checkbox" id="front-delt"> <label for="front-delt">Front Delt</label></li>
-        <li><input type="checkbox" id="rear-delt"> <label for="rear-delt">Rear Delt</label></li>
-        <li><input type="checkbox" id="side-delt"> <label for="side-delt">Side Delt</label></li>
-        <li><input type="checkbox" id="traps"> <label for="traps">Traps</label></li>
-        <li><input type="checkbox" id="lats"> <label for="lats">Lats</label></li>
-        <li><input type="checkbox" id="mid-back"> <label for="mid-back">Mid Back</label></li>
-        <li><input type="checkbox" id="lower-back"> <label for="lower-back">Lower Back</label></li>
-        <li><input type="checkbox" id="upper-chest"> <label for="upper-chest">Upper Chest</label></li>
-        <li><input type="checkbox" id="mid-chest"> <label for="mid-chest">Mid Chest</label></li>
-        <li><input type="checkbox" id="lower-chest"> <label for="lower-chest">Lower Chest</label></li>
-        <li><input type="checkbox" id="biceps"> <label for="biceps">Biceps</label></li>
-        <li><input type="checkbox" id="triceps"> <label for="triceps">Triceps</label></li>
-        <li><input type="checkbox" id="hamstrings"> <label for="hamstrings">Hamstrings</label></li>
-        <li><input type="checkbox" id="glutes"> <label for="glutes">Glutes</label></li>
-        <li><input type="checkbox" id="quads"> <label for="quads">Quads</label></li>
-    </ul>
+    <div class="grid-container">
+        <div class="grid-item">
+            <img src="images/chest.png" alt="Image 1">
+            <p>Image 1</p>
+        </div>
+        <div class="grid-item">
+            <img src="images/image2.jpg" alt="Image 2">
+            <p>Image 2</p>
+        </div>
+        <div class="grid-item">
+            <img src="images/image3.jpg" alt="Image 3">
+            <p>Image 3</p>
+        </div>
+        <div class="grid-item">
+            <img src="images/image4.jpg" alt="Image 4">
+            <p>Image 4</p>
+        </div>
+    </div>
 </body>
 </html>
