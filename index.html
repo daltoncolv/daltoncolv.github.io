@@ -37,6 +37,21 @@
             max-width: 100%;
             border-radius: 10px;
         }
+        .grid-item a {
+            text-decoration: none; /* Remove underline from links */
+        }
+        .grid-item button {
+            background-color: #FFD700; /* Button background color */
+            color: black; /* Button text color */
+            border: none; /* Remove border */
+            padding: 10px 20px; /* Button padding */
+            border-radius: 5px; /* Rounded corners for buttons */
+            cursor: pointer; /* Pointer cursor on hover */
+            margin-top: 10px; /* Margin on top of the button */
+        }
+        .grid-item button:hover {
+            background-color: #FFC107; /* Change color on hover */
+        }
     </style>
 </head>
 <body>
@@ -44,19 +59,19 @@
     <div class="grid-container">
         <div class="grid-item">
             <img src="images/chest.png" alt="Chest">
-            <p>Chest</p>
+            <a href="https://www.amazon.com/dp/B09XZCMK1Y?tag=runrepcom-rn-20&linkCode=ogi&th=1&psc=1"><button>Chest</button></a>
         </div>
         <div class="grid-item">
             <img src="images/back.png" alt="Back">
-            <p>Back</p>
+            <a href="back.html"><button>Back</button></a>
         </div>
         <div class="grid-item">
             <img src="images/shoulders.png" alt="Shoulders">
-            <p>Shoulders</p>
+            <a href="shoulders.html"><button>Shoulders</button></a>
         </div>
         <div class="grid-item">
             <img src="images/biceps.png" alt="Biceps">
-            <p>Biceps</p>
+            <a href="biceps.html"><button>Biceps</button></a>
         </div>
     </div>
 </body>
