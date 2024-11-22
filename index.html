@@ -21,10 +21,12 @@
         }
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Two columns */
+            grid-template-rows: repeat(10, 1fr); /* 10 rows */
             gap: 20px; /* Space between grid items */
-            width: 90%; /* Adjust width to fit content */
-            margin: 20px; /* Margin around the grid container */
+            width: 90%; /* Full width but with 5% margin on each side */
+            margin: 20px auto; /* Center the grid container and add margin to the sides */
+            padding: 10px; /* Padding around the grid container */
+            box-sizing: border-box; /* Ensures padding is included in the width calculation */
         }
         .grid-item {
             background-color: #333; /* Background color for grid items */
@@ -32,24 +34,19 @@
             border-radius: 10px; /* Rounded corners for grid items */
             display: flex;
             flex-direction: column; /* Arrange content vertically */
-            align-items: flex-start; /* Align content to the left */
+            align-items: center; /* Align content to the center */
+            height: 200px; /* Adjust cell height */
+            justify-content: space-between; /* Space out content to fill the cell */
+            margin: 5px; /* Small margin between the cell content and the page edge */
         }
         .grid-item img {
-            max-width: 150px;
-            border-radius: 10px;
-            margin-right: 20px; /* Space between image and text */
-        }
-        .grid-content {
-            display: flex;
-            align-items: center;
-            width: 100%;
-        }
-        .grid-text {
-            flex-grow: 1; /* Allow text to take remaining space */
+            max-width: 100%;
+            max-height: 120px; /* Upsized images */
+            object-fit: contain; /* Ensure images fit within the container */
+            margin-bottom: 10px; /* Space between image and button */
         }
         .grid-item a {
             text-decoration: none; /* Remove underline from links */
-            align-self: center; /* Center button horizontally */
         }
         .grid-item button {
             background-color: #FFD700; /* Button background color */
@@ -69,74 +66,44 @@
     <h1>Fitness Pal</h1>
     <div class="grid-container">
         <div class="grid-item">
-            <div class="grid-content">
-                <img src="images/Chest.jpg" alt="Chest">
-                <div class="grid-text">Chest exercises to strengthen your upper body.</div>
-            </div>
+            <img src="images/chest.png" alt="Chest">
             <a href="https://daltoncolv.github.io/subsites/"><button>Chest</button></a>
         </div>
         <div class="grid-item">
-            <div class="grid-content">
-                <img src="images/Back.jpg" alt="Back">
-                <div class="grid-text">Back exercises to improve posture and strength.</div>
-            </div>
+            <img src="images/back.png" alt="Back">
             <a href="back.html"><button>Back</button></a>
         </div>
         <div class="grid-item">
-            <div class="grid-content">
-                <img src="images/Back.jpg" alt="Back">
-                <div class="grid-text">Shoulder exercises to enhance stability and power.</div>
-            </div>
+            <img src="images/shoulders.png" alt="Shoulders">
             <a href="shoulders.html"><button>Shoulders</button></a>
         </div>
         <div class="grid-item">
-            <div class="grid-content">
-                <img src="images/Back.jpg" alt="Back">
-                <div class="grid-text">Biceps exercises for arm strength and definition.</div>
-            </div>
-            <a href="biceps.html"><button>Biceps</button></a>
-        </div>
-        <div class="grid-item">
-            <div class="grid-content">
-                <img src="images/Back.jpg" alt="Back">
-                <div class="grid-text">Triceps exercises for complete arm development.</div>
-            </div>
+            <img src="images/triceps.png" alt="Triceps">
             <a href="triceps.html"><button>Triceps</button></a>
         </div>
         <div class="grid-item">
-            <div class="grid-content">
-                <img src="images/Back.jpg" alt="Back">
-                <div class="grid-text">Leg exercises to build lower body strength.</div>
-            </div>
-            <a href="legs.html"><button>Legs</button></a>
+            <img src="images/biceps.png" alt="Biceps">
+            <a href="biceps.html"><button>Biceps</button></a>
         </div>
         <div class="grid-item">
-            <div class="grid-content">
-                <img src="images/Back.jpg" alt="Back">
-                <div class="grid-text">Abdominal exercises for core strength and stability.</div>
-            </div>
+            <img src="images/quads.png" alt="Quads">
+            <a href="quads.html"><button>Quads</button></a>
+        </div>
+        <div class="grid-item">
+            <img src="images/hamstrings.png" alt="Hamstrings">
+            <a href="hamstrings.html"><button>Hamstrings</button></a>
+        </div>
+        <div class="grid-item">
+            <img src="images/calves.png" alt="Calves">
+            <a href="calves.html"><button>Calves</button></a>
+        </div>
+        <div class="grid-item">
+            <img src="images/abs.png" alt="Abs">
             <a href="abs.html"><button>Abs</button></a>
         </div>
         <div class="grid-item">
-            <div class="grid-content">
-                <img src="images/Back.jpg" alt="Back">
-                <div class="grid-text">Cardio exercises for heart health and endurance.</div>
-            </div>
+            <img src="images/cardio.png" alt="Cardio">
             <a href="cardio.html"><button>Cardio</button></a>
-        </div>
-        <div class="grid-item">
-            <div class="grid-content">
-                <img src="images/Back.jpg" alt="Back">
-                <div class="grid-text">Yoga exercises for flexibility and mental wellness.</div>
-            </div>
-            <a href="yoga.html"><button>Yoga</button></a>
-        </div>
-        <div class="grid-item">
-            <div class="grid-content">
-                <img src="images/Back.jpg" alt="Back">
-                <div class="grid-text">Stretching exercises to improve flexibility and recovery.</div>
-            </div>
-            <a href="stretching.html"><button>Stretching</button></a>
         </div>
     </div>
 </body>
