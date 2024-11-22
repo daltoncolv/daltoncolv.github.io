@@ -6,13 +6,11 @@
         body {
             background-color: black;
             color: #FFD700; /* Soft golden color */
-            display: flex;
-            justify-content: flex-start; /* Align content to the top */
-            align-items: center; /* Center content horizontally */
-            height: 100vh;
             margin: 0;
             padding: 0; /* Remove padding */
+            display: flex;
             flex-direction: column;
+            align-items: flex-start; /* Align content to the left */
         }
         h1 {
             text-align: center;
@@ -22,10 +20,10 @@
         }
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive grid columns */
+            grid-template-columns: repeat(2, 1fr); /* Two columns */
             gap: 20px; /* Space between grid items */
-            width: 90%; /* Adjust width as needed */
-            margin: 20px auto; /* Center the grid container */
+            width: 50%; /* Adjust width to fit content */
+            margin: 20px; /* Margin around the grid container */
         }
         .grid-item {
             background-color: #333; /* Background color for grid items */
@@ -72,6 +70,30 @@
         <div class="grid-item">
             <img src="images/biceps.png" alt="Biceps">
             <a href="biceps.html"><button>Biceps</button></a>
+        </div>
+        <div class="grid-item">
+            <img src="images/triceps.png" alt="Triceps">
+            <a href="triceps.html"><button>Triceps</button></a>
+        </div>
+        <div class="grid-item">
+            <img src="images/legs.png" alt="Legs">
+            <a href="legs.html"><button>Legs</button></a>
+        </div>
+        <div class="grid-item">
+            <img src="images/abs.png" alt="Abs">
+            <a href="abs.html"><button>Abs</button></a>
+        </div>
+        <div class="grid-item">
+            <img src="images/cardio.png" alt="Cardio">
+            <a href="cardio.html"><button>Cardio</button></a>
+        </div>
+        <div class="grid-item">
+            <img src="images/yoga.png" alt="Yoga">
+            <a href="yoga.html"><button>Yoga</button></a>
+        </div>
+        <div class="grid-item">
+            <img src="images/stretching.png" alt="Stretching">
+            <a href="stretching.html"><button>Stretching</button></a>
         </div>
     </div>
 </body>
