@@ -19,9 +19,73 @@
             padding-top: 20px; /* Add padding to move it slightly down from the top if needed */
             font-size: 3em; /* Increase font size to 3 times the default */
         }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 columns */
+            grid-template-rows: repeat(5, 1fr); /* 5 rows */
+            gap: 20px; /* Space between grid items */
+            width: 90%; /* Full width but with 5% margin on each side */
+            margin: 20px auto; /* Center the grid container */
+            padding: 10px; /* Padding around the grid container */
+            box-sizing: border-box; /* Ensures padding is included in the width calculation */
+        }
+        .grid-item {
+            background-color: #333; /* Background color for grid items */
+            display: flex;
+            align-items: center; /* Center content vertically */
+            justify-content: center; /* Center content horizontally */
+            height: 200px; /* Same height as before */
+            border-radius: 10px; /* Rounded corners for grid cells */
+        }
+        .grid-item button {
+            background-color: #FFD700; /* Button background color */
+            color: black; /* Button text color */
+            border: none; /* Remove border */
+            padding: 30px; /* Padding to make the button fill most of the grid cell */
+            border-radius: 10px; /* Rounded corners for buttons */
+            cursor: pointer; /* Pointer cursor on hover */
+            width: 90%; /* Button takes up most of the width of the cell */
+            height: 90%; /* Button takes up most of the height of the cell */
+            font-size: 1.5em; /* Increase button text size */
+        }
+        .grid-item button:hover {
+            background-color: #FFC107; /* Change color on hover */
+        }
     </style>
 </head>
 <body>
     <h1>Chest</h1>
+    <div class="grid-container">
+        <div class="grid-item">
+            <button>Chest</button>
+        </div>
+        <div class="grid-item">
+            <button>Back</button>
+        </div>
+        <div class="grid-item">
+            <button>Shoulders</button>
+        </div>
+        <div class="grid-item">
+            <button>Triceps</button>
+        </div>
+        <div class="grid-item">
+            <button>Biceps</button>
+        </div>
+        <div class="grid-item">
+            <button>Quads</button>
+        </div>
+        <div class="grid-item">
+            <button>Hamstrings</button>
+        </div>
+        <div class="grid-item">
+            <button>Calves</button>
+        </div>
+        <div class="grid-item">
+            <button>Abs</button>
+        </div>
+        <div class="grid-item">
+            <button>Cardio</button>
+        </div>
+    </div>
 </body>
 </html>
