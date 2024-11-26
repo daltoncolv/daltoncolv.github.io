@@ -3,7 +3,7 @@ name: Save Workout Data
 on:
   push:
     paths:
-      - 'daltoncolv.github.io/subsites/Chest/Barbell Bench/data.txt'  # Watch for changes to your .txt file
+      - 'subsites/Chest/Barbell%20Bench/data.txt'  # Correct path with %20 for space
 
 jobs:
   save-data:
@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Write data to file
-        run: echo "Data goes here" >> data.txt
+        run: echo "Data goes here" >> subsites/Chest/Barbell%20Bench/data.txt
 
       - name: Commit changes
         run: git commit -am "Update workout data"
