@@ -1,0 +1,22 @@
+name: Save Workout Data
+
+on:
+  push:
+    paths:
+      - 'daltoncolv.github.io/subsites/Chest/Barbell Bench/data.txt'  # Watch for changes to your .txt file
+
+jobs:
+  save-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Write data to file
+        run: echo "Data goes here" >> data.txt
+
+      - name: Commit changes
+        run: git commit -am "Update workout data"
+      
+      - name: Push changes
+        run: git push
