@@ -12,11 +12,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set up Git
+        run: |
+          git config user.name "daltoncolv"
+          git config user.email "daltoncolvin01@gmail.com"
+
       - name: Write data to file
-        run: echo "Data goes here" >> subsites/Chest/Barbell%20Bench/data.txt
+        run: |
+          echo "Data goes here" >> subsites/Chest/Barbell%20Bench/data.txt
 
       - name: Commit changes
-        run: git commit -am "Update workout data"
-      
+        run: |
+          git add subsites/Chest/Barbell%20Bench/data.txt
+          git commit -m "Update workout data"
+
       - name: Push changes
         run: git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use GitHub's default token for Actions
