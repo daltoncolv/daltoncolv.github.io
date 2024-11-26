@@ -19,6 +19,15 @@
             padding-top: 20px; /* Add padding to move it slightly down from the top if needed */
             font-size: 3em; /* Increase font size to 3 times the default */
         }
+        #searchBar {
+            margin: 20px;
+            padding: 10px;
+            font-size: 1.2em;
+            width: 90%; /* Full width but with 5% margin on each side */
+            box-sizing: border-box; /* Ensures padding is included in the width calculation */
+            border-radius: 10px; /* Rounded corners */
+            border: none; /* Remove border */
+        }
         .grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr); /* 2 columns */
@@ -37,7 +46,7 @@
             height: 200px; /* Same height as before */
             border-radius: 10px; /* Rounded corners for grid cells */
         }
-        .grid-item button {
+        .grid-item a {
             background-color: #FFD700; /* Button background color */
             color: black; /* Button text color */
             border: none; /* Remove border */
@@ -47,68 +56,90 @@
             width: 90%; /* Button takes up most of the width of the cell */
             height: 90%; /* Button takes up most of the height of the cell */
             font-size: 2em; /* Double the button text size */
+            text-decoration: none; /* Remove underline from links */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .grid-item button:hover {
+        .grid-item a:hover {
             background-color: #FFC107; /* Change color on hover */
         }
     </style>
+    <script>
+        function filterGrid() {
+            const searchTerm = document.getElementById('searchBar').value.toLowerCase();
+            const gridItems = document.getElementsByClassName('grid-item');
+            
+            for (let i = 0; i < gridItems.length; i++) {
+                const button = gridItems[i].getElementsByTagName('a')[0];
+                const buttonText = button.innerText.toLowerCase();
+                
+                if (buttonText.includes(searchTerm)) {
+                    gridItems[i].style.display = 'flex'; // Show item
+                } else {
+                    gridItems[i].style.display = 'none'; // Hide item
+                }
+            }
+        }
+    </script>
 </head>
 <body>
     <h1>Chest</h1>
+    <input type="text" id="searchBar" onkeyup="filterGrid()" placeholder="Search exercises...">
     <div class="grid-container">
         <div class="grid-item">
-            <button>Barbell Bench</button>
+            <a href="http://example.com/barbell-bench">Barbell Bench</a>
         </div>
         <div class="grid-item">
-            <button>Dumbbell Bench</button>
+            <a href="http://example.com/dumbbell-bench">Dumbbell Bench</a>
         </div>
         <div class="grid-item">
-            <button>Smith Machine Bench</button>
+            <a href="http://example.com/smith-machine-bench">Smith Machine Bench</a>
         </div>
         <div class="grid-item">
-            <button>Barbell Incline</button>
+            <a href="http://example.com/barbell-incline">Barbell Incline</a>
         </div>
         <div class="grid-item">
-            <button>Dumbbell Incline</button>
+            <a href="http://example.com/dumbbell-incline">Dumbbell Incline</a>
         </div>
         <div class="grid-item">
-            <button>Smith Machine Incline</button>
+            <a href="http://example.com/smith-machine-incline">Smith Machine Incline</a>
         </div>
         <div class="grid-item">
-            <button>Barbell Decline Bench</button>
+            <a href="http://example.com/barbell-decline-bench">Barbell Decline Bench</a>
         </div>
         <div class="grid-item">
-            <button>Pec-Deck Flies</button>
+            <a href="http://example.com/pec-deck-flies">Pec-Deck Flies</a>
         </div>
         <div class="grid-item">
-            <button>Incline Cable Flies</button>
+            <a href="http://example.com/incline-cable-flies">Incline Cable Flies</a>
         </div>
         <div class="grid-item">
-            <button>Flat Cable Flies</button>
+            <a href="http://example.com/flat-cable-flies">Flat Cable Flies</a>
         </div>
         <div class="grid-item">
-            <button>Decline Cable Flies</button>
+            <a href="http://example.com/decline-cable-flies">Decline Cable Flies</a>
         </div>
         <div class="grid-item">
-            <button>Incline Dumbbell Flies</button>
+            <a href="http://example.com/incline-dumbbell-flies">Incline Dumbbell Flies</a>
         </div>
         <div class="grid-item">
-            <button>Flat Dumbbell Flies</button>
+            <a href="http://example.com/flat-dumbbell-flies">Flat Dumbbell Flies</a>
         </div>
         <div class="grid-item">
-            <button>Seated Incline Cable Flies</button>
+            <a href="http://example.com/seated-incline-cable-flies">Seated Incline Cable Flies</a>
         </div>
         <div class="grid-item">
-            <button>Seated Flat Cable Flies</button>
+            <a href="http://example.com/seated-flat-cable-flies">Seated Flat Cable Flies</a>
         </div>
         <div class="grid-item">
-            <button>Incline Chest Machine</button>
+            <a href="http://example.com/incline-chest-machine">Incline Chest Machine</a>
         </div>
         <div class="grid-item">
-            <button>Flat Chest Machine</button>
+            <a href="http://example.com/flat-chest-machine">Flat Chest Machine</a>
         </div>
         <div class="grid-item">
-            <button>Decline Chest Machine</button>
+            <a href="http://example.com/decline-chest-machine">Decline Chest Machine</a>
         </div>
     </div>
 </body>
