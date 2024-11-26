@@ -19,6 +19,20 @@
             padding-top: 20px; /* Add padding to move it slightly down from the top if needed */
             font-size: 3em; /* Increase font size to 3 times the default */
         }
+        .search-bar {
+            width: 90%; /* Same width as the grid container */
+            margin: 20px auto; /* Center the search bar */
+            padding: 10px;
+            box-sizing: border-box; /* Ensures padding is included in the width calculation */
+        }
+        .search-bar input {
+            width: 100%; /* Full width of the search bar */
+            padding: 10px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            border: none;
+            box-sizing: border-box;
+        }
         .grid-container {
             display: grid;
             grid-template-rows: repeat(10, 1fr); /* 10 rows */
@@ -69,7 +83,10 @@
 </head>
 <body>
     <h1>Fitness Pal</h1>
-    <div class="grid-container">
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search for exercises..." onkeyup="filterGrid()">
+    </div>
+    <div class="grid-container" id="gridContainer">
         <div class="grid-item">
             <img src="images/Chest.jpg" alt="Chest">
             <a href="https://daltoncolv.github.io/subsites/Chest/"><button>Chest</button></a>
@@ -117,9 +134,28 @@
         </div>
         <div class="grid-item">
             <img src="images/cardio.png" alt="Cardio">
-            <a href="https://daltoncolv.github.io/subsites/Cardsi/"><button>Cardio</button></a>
+            <a href="https://daltoncolv.github.io/subsites/Cardio/"><button>Cardio</button></a>
             <span>Cardio exercises for endurance</span>
         </div>
     </div>
+    <script>
+        function filterGrid() {
+            var input, filter, gridContainer, gridItems, button, i, txtValue;
+            input = document.getElementById('searchInput');
+            filter = input.value.toUpperCase();
+            gridContainer = document.getElementById("gridContainer");
+            gridItems = gridContainer.getElementsByClassName('grid-item');
+            
+            for (i = 0; i < gridItems.length; i++) {
+                button = gridItems[i].getElementsByTagName("button")[0];
+                txtValue = button.textContent || button.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    gridItems[i].style.display = "";
+                } else {
+                    gridItems[i].style.display = "none";
+                }
+            }
+        }
+    </script>
 </body>
 </html>
