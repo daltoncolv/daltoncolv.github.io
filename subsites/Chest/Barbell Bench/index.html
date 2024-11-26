@@ -98,7 +98,7 @@
     <button class="submit-btn" onclick="submitData()">Submit</button>
 
     <script>
-        const scriptURL = 'https://api.github.com/repos/daltoncolv/subsites/Chest/Barbell Bench/data.txt';
+        const scriptURL = 'https://api.github.com/repos/daltoncolv/daltoncolv.github.io/contents/subsites/Chest/Barbell%20Bench/data.txt';
 
         function submitData() {
             const sets = ['1', '2', '3', '4', '5', '6'];
@@ -108,13 +108,13 @@
                 const weight = document.getElementById(`weight${set}`).value;
                 dataToSave += `Set ${set}: Reps: ${reps}, Weight: ${weight}\n`;
             });
-
+        
             const data = {
                 message: "Save workout data",
                 content: btoa(dataToSave),
                 branch: "main"
             };
-
+        
             fetch(scriptURL, {
                 method: 'PUT',
                 headers: {
@@ -131,6 +131,7 @@
                 console.error('Error:', error);
             });
         }
+
     </script>
 </body>
 </html>
