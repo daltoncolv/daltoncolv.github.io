@@ -19,9 +19,116 @@
             padding-top: 20px; /* Add padding to move it slightly down from the top if needed */
             font-size: 3em; /* Increase font size to 3 times the default */
         }
+        table {
+            margin-top: 20px;
+            border-collapse: collapse; /* Merge borders between cells */
+            width: 80%;
+        }
+        th, td {
+            border: 1px solid #FFD700; /* Border color */
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            font-size: 1.5em;
+        }
+        td {
+            font-size: 1.2em;
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px; /* Rounded corners */
+            border: 1px solid #FFD700; /* Border color */
+            background-color: #333; /* Input background color */
+            color: #FFD700; /* Input text color */
+        }
+        .submit-btn {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            color: black;
+            background-color: #FFD700; /* Button background color */
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #FFC107; /* Change color on hover */
+        }
     </style>
 </head>
 <body>
     <h1>Barbell Bench</h1>
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Reps</th>
+                <th>Weight</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Set 1</td>
+                <td><input type="text" name="reps" id="reps1" /></td>
+                <td><input type="text" name="weight" id="weight1" /></td>
+            </tr>
+            <tr>
+                <td>Set 2</td>
+                <td><input type="text" name="reps" id="reps2" /></td>
+                <td><input type="text" name="weight" id="weight2" /></td>
+            </tr>
+            <tr>
+                <td>Set 3</td>
+                <td><input type="text" name="reps" id="reps3" /></td>
+                <td><input type="text" name="weight" id="weight3" /></td>
+            </tr>
+            <tr>
+                <td>Set 4</td>
+                <td><input type="text" name="reps" id="reps4" /></td>
+                <td><input type="text" name="weight" id="weight4" /></td>
+            </tr>
+            <tr>
+                <td>Set 5</td>
+                <td><input type="text" name="reps" id="reps5" /></td>
+                <td><input type="text" name="weight" id="weight5" /></td>
+            </tr>
+            <tr>
+                <td>Set 6</td>
+                <td><input type="text" name="reps" id="reps6" /></td>
+                <td><input type="text" name="weight" id="weight6" /></td>
+            </tr>
+        </tbody>
+    </table>
+    <button class="submit-btn" onclick="submitData()">Submit</button>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwasx_3GMl_DupBjdi2bmfxa9rpqBij4DLSfGL7ivkE3B-YnR7NA_NFxIxO3g6NLi6e/exec';
+
+        function submitData() {
+            const sets = ['1', '2', '3', '4', '5', '6'];
+            sets.forEach(set => {
+                const reps = document.getElementById(`reps${set}`).value;
+                const weight = document.getElementById(`weight${set}`).value;
+
+                fetch(scriptURL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ set: `Set ${set}`, reps, weight }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        }
+    </script>
 </body>
 </html>
