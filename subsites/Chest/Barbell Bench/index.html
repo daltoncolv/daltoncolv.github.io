@@ -99,6 +99,7 @@
 
     <script>
         const scriptURL = 'https://api.github.com/repos/daltoncolv/daltoncolv.github.io/contents/subsites/Chest/Barbell%20Bench/data.txt';
+        const token = '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'; // Your GitHub Token
 
         function submitData() {
             const sets = ['1', '2', '3', '4', '5', '6'];
@@ -108,30 +109,41 @@
                 const weight = document.getElementById(`weight${set}`).value;
                 dataToSave += `Set ${set}: Reps: ${reps}, Weight: ${weight}\n`;
             });
-        
-            const data = {
-                message: "Save workout data",
-                content: btoa(dataToSave),
-                branch: "main"
-            };
-        
-            fetch(scriptURL, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `token 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`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
 
+            // First, retrieve the current file SHA for 'data.txt' file
+            fetch(scriptURL)
+                .then(response => response.json())
+                .then(data => {
+                    const sha = data.sha; // Get the file SHA
+
+                    const dataPayload = {
+                        message: "Save workout data",
+                        content: btoa(dataToSave),  // Base64 encode the content
+                        sha: sha,                   // Include the SHA
+                        branch: "main"
+                    };
+
+                    // PUT request to save the file
+                    fetch(scriptURL, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(dataPayload),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error retrieving file SHA:', error);
+                });
+        }
     </script>
 </body>
 </html>
