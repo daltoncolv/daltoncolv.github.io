@@ -221,13 +221,19 @@
             }
         
             savedData.forEach((entry, index) => {
-                // Log the entry we are currently processing
+                // Log the entry we are currently processing, especially the raw data
                 console.log(`Processing saved data entry ${index + 1}:`, entry);
+                console.log(`Raw entry data:`, entry.data); // Log the raw HTML data to check its structure
         
                 // Parse the data from saved HTML rows
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(entry.data, 'text/html');
+                
+                // Log the parsed document to verify it
+                console.log(`Parsed document for entry ${index + 1}:`, doc);
+        
                 const rows = doc.querySelectorAll('tr');
+                console.log(`Rows found:`, rows);  // Log how many rows are found
         
                 if (rows.length === 0) {
                     console.log(`No rows found in entry ${index + 1}`);
@@ -271,6 +277,7 @@
                 maxWeightsBody.innerHTML += `<tr><td>${reps}</td><td>${maxWeight}</td></tr>`;
             });
         }
+
 
 
         function deleteSelected() {
