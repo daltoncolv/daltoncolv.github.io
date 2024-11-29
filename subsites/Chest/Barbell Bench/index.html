@@ -50,6 +50,17 @@
         .submit-btn:hover {
             background-color: #FFC107;
         }
+        #savedData {
+            margin-top: 20px;
+            width: 80%;
+            border-collapse: collapse;
+            color: #FFD700;
+        }
+        #savedData th, #savedData td {
+            border: 1px solid #FFD700;
+            padding: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -97,53 +108,104 @@
     </table>
     <button class="submit-btn" onclick="submitData()">Submit</button>
 
+    <!-- Display the saved data -->
+    <table id="savedData">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Set</th>
+                <th>Reps</th>
+                <th>Weight</th>
+            </tr>
+        </thead>
+        <tbody id="savedDataBody"></tbody>
+    </table>
+
     <script>
         const scriptURL = 'https://api.github.com/repos/daltoncolv/daltoncolv.github.io/contents/subsites/Chest/Barbell%20Bench/data.txt';
         const token = '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'; // Your GitHub Token
 
         function submitData() {
-            const sets = ['1', '2', '3', '4', '5', '6'];
-            let dataToSave = '';
-            sets.forEach(set => {
-                const reps = document.getElementById(`reps${set}`).value;
-                const weight = document.getElementById(`weight${set}`).value;
-                dataToSave += `Set ${set}: Reps: ${reps}, Weight: ${weight}\n`;
-            });
+    const sets = ['1', '2', '3', '4', '5', '6'];
+    let dataToSave = '';
+    let displayData = '';
+    const currentDate = new Date().toLocaleDateString(); // Get the current date
 
-            // First, retrieve the current file SHA for 'data.txt' file
-            fetch(scriptURL)
+    sets.forEach(set => {
+        const reps = document.getElementById(`reps${set}`).value;
+        const weight = document.getElementById(`weight${set}`).value;
+
+        // Only add non-empty sets
+        if (reps && weight) {
+            dataToSave += `Set ${set}: Reps: ${reps}, Weight: ${weight}\n`;
+            displayData += `<tr><td>${currentDate}</td><td>Set ${set}</td><td>${reps}</td><td>${weight}</td></tr>`;
+        }
+    });
+
+    if (dataToSave) {
+        // Save the data to GitHub
+        fetch(scriptURL)
+            .then(response => response.json())
+            .then(data => {
+                const sha = data.sha; // Get the file SHA
+
+                const dataPayload = {
+                    message: "Save workout data",
+                    content: btoa(dataToSave),  // Base64 encode the content
+                    sha: sha,                   // Include the SHA
+                    branch: "main"
+                };
+
+                fetch(scriptURL, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(dataPayload),
+                })
                 .then(response => response.json())
-                .then(data => {
-                    const sha = data.sha; // Get the file SHA
+                .then(() => {
+                    console.log('Success: Data saved');
+                    // Append the new data to the display table
+                    const savedDataBody = document.getElementById("savedDataBody");
+                    savedDataBody.innerHTML += displayData;
 
-                    const dataPayload = {
-                        message: "Save workout data",
-                        content: btoa(dataToSave),  // Base64 encode the content
-                        sha: sha,                   // Include the SHA
-                        branch: "main"
-                    };
+                    // Save the updated data to local storage
+                    let existingData = localStorage.getItem('workoutData');
+                    if (existingData) {
+                        existingData = JSON.parse(existingData);
+                    } else {
+                        existingData = [];
+                    }
 
-                    // PUT request to save the file
-                    fetch(scriptURL, {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': `token ${token}`,
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(dataPayload),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Success:', data);
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
+                    existingData.push({ date: currentDate, data: displayData });
+                    localStorage.setItem('workoutData', JSON.stringify(existingData));
+
+                    // Clear the input fields
+                    sets.forEach(set => {
+                        document.getElementById(`reps${set}`).value = '';
+                        document.getElementById(`weight${set}`).value = '';
                     });
                 })
                 .catch(error => {
-                    console.error('Error retrieving file SHA:', error);
+                    console.error('Error:', error);
                 });
-        }
-    </script>
-</body>
-</html>
+            })
+            .catch(error => {
+                console.error('Error retrieving file SHA:', error);
+            });
+    }
+}
+
+// Load saved data from Local Storage when the page loads
+window.onload = () => {
+    const savedDataBody = document.getElementById("savedDataBody");
+    let savedData = localStorage.getItem('workoutData');
+    if (savedData) {
+        savedData = JSON.parse(savedData);
+        savedData.forEach(entry => {
+            savedDataBody.innerHTML += entry.data;
+        });
+    }
+};
