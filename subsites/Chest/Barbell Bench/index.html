@@ -37,7 +37,7 @@
             background-color: #333;
             color: #FFD700;
         }
-        .submit-btn {
+        .submit-btn, .delete-btn {
             margin-top: 20px;
             padding: 15px 30px;
             font-size: 1.2em;
@@ -47,19 +47,32 @@
             border-radius: 10px;
             cursor: pointer;
         }
-        .submit-btn:hover {
+        .submit-btn:hover, .delete-btn:hover {
             background-color: #FFC107;
         }
-        #savedData {
+        #savedData, #maxWeights {
             margin-top: 20px;
             width: 80%;
             border-collapse: collapse;
             color: #FFD700;
         }
-        #savedData th, #savedData td {
+        #savedData th, #savedData td, #maxWeights th, #maxWeights td {
             border: 1px solid #FFD700;
             padding: 10px;
             text-align: center;
+        }
+        .checkbox {
+            width: 30px;
+            height: 30px;
+        }
+        .delete-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .delete-section label {
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -74,36 +87,13 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>Set 1</td>
-                <td><input type="text" name="reps" id="reps1" /></td>
-                <td><input type="text" name="weight" id="weight1" /></td>
-            </tr>
-            <tr>
-                <td>Set 2</td>
-                <td><input type="text" name="reps" id="reps2" /></td>
-                <td><input type="text" name="weight" id="weight2" /></td>
-            </tr>
-            <tr>
-                <td>Set 3</td>
-                <td><input type="text" name="reps" id="reps3" /></td>
-                <td><input type="text" name="weight" id="weight3" /></td>
-            </tr>
-            <tr>
-                <td>Set 4</td>
-                <td><input type="text" name="reps" id="reps4" /></td>
-                <td><input type="text" name="weight" id="weight4" /></td>
-            </tr>
-            <tr>
-                <td>Set 5</td>
-                <td><input type="text" name="reps" id="reps5" /></td>
-                <td><input type="text" name="weight" id="weight5" /></td>
-            </tr>
-            <tr>
-                <td>Set 6</td>
-                <td><input type="text" name="reps" id="reps6" /></td>
-                <td><input type="text" name="weight" id="weight6" /></td>
-            </tr>
+            <!-- Set rows for data input -->
+            <tr><td>Set 1</td><td><input type="text" name="reps" id="reps1" /></td><td><input type="text" name="weight" id="weight1" /></td></tr>
+            <tr><td>Set 2</td><td><input type="text" name="reps" id="reps2" /></td><td><input type="text" name="weight" id="weight2" /></td></tr>
+            <tr><td>Set 3</td><td><input type="text" name="reps" id="reps3" /></td><td><input type="text" name="weight" id="weight3" /></td></tr>
+            <tr><td>Set 4</td><td><input type="text" name="reps" id="reps4" /></td><td><input type="text" name="weight" id="weight4" /></td></tr>
+            <tr><td>Set 5</td><td><input type="text" name="reps" id="reps5" /></td><td><input type="text" name="weight" id="weight5" /></td></tr>
+            <tr><td>Set 6</td><td><input type="text" name="reps" id="reps6" /></td><td><input type="text" name="weight" id="weight6" /></td></tr>
         </tbody>
     </table>
     <button class="submit-btn" onclick="submitData()">Submit</button>
@@ -112,6 +102,7 @@
     <table id="savedData">
         <thead>
             <tr>
+                <th>Select</th>
                 <th>Date</th>
                 <th>Set</th>
                 <th>Reps</th>
@@ -121,91 +112,167 @@
         <tbody id="savedDataBody"></tbody>
     </table>
 
+    <!-- New Table for Max Weight per Reps -->
+    <table id="maxWeights">
+        <thead>
+            <tr>
+                <th>Reps</th>
+                <th>Max Weight</th>
+            </tr>
+        </thead>
+        <tbody id="maxWeightsBody"></tbody>
+    </table>
+
+    <button class="delete-btn" onclick="deleteSelected()">Delete Selected</button>
+
+    <div class="delete-section">
+        <input type="checkbox" id="confirmDeleteAll" />
+        <label for="confirmDeleteAll" style="color: #FFD700;">Confirm Deletion</label>
+        <button class="delete-btn" onclick="deleteAll()" id="deleteAllBtn">Delete All</button>
+    </div>
+
     <script>
         const scriptURL = 'https://api.github.com/repos/daltoncolv/daltoncolv.github.io/contents/subsites/Chest/Barbell%20Bench/data.txt';
         const token = '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'; // Your GitHub Token
 
         function submitData() {
-    const sets = ['1', '2', '3', '4', '5', '6'];
-    let dataToSave = '';
-    let displayData = '';
-    const currentDate = new Date().toLocaleDateString(); // Get the current date
+            const sets = ['1', '2', '3', '4', '5', '6'];
+            let dataToSave = '';
+            let displayData = '';
+            const currentDate = new Date().toLocaleDateString(); // Get the current date
 
-    sets.forEach(set => {
-        const reps = document.getElementById(`reps${set}`).value;
-        const weight = document.getElementById(`weight${set}`).value;
+            // Collecting the new data
+            sets.forEach(set => {
+                const reps = document.getElementById(`reps${set}`).value;
+                const weight = document.getElementById(`weight${set}`).value;
 
-        // Only add non-empty sets
-        if (reps && weight) {
-            dataToSave += `Set ${set}: Reps: ${reps}, Weight: ${weight}\n`;
-            displayData += `<tr><td>${currentDate}</td><td>Set ${set}</td><td>${reps}</td><td>${weight}</td></tr>`;
-        }
-    });
-
-    if (dataToSave) {
-        // Save the data to GitHub
-        fetch(scriptURL)
-            .then(response => response.json())
-            .then(data => {
-                const sha = data.sha; // Get the file SHA
-
-                const dataPayload = {
-                    message: "Save workout data",
-                    content: btoa(dataToSave),  // Base64 encode the content
-                    sha: sha,                   // Include the SHA
-                    branch: "main"
-                };
-
-                fetch(scriptURL, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(dataPayload),
-                })
-                .then(response => response.json())
-                .then(() => {
-                    console.log('Success: Data saved');
-                    // Append the new data to the display table
-                    const savedDataBody = document.getElementById("savedDataBody");
-                    savedDataBody.innerHTML += displayData;
-
-                    // Save the updated data to local storage
-                    let existingData = localStorage.getItem('workoutData');
-                    if (existingData) {
-                        existingData = JSON.parse(existingData);
-                    } else {
-                        existingData = [];
-                    }
-
-                    existingData.push({ date: currentDate, data: displayData });
-                    localStorage.setItem('workoutData', JSON.stringify(existingData));
-
-                    // Clear the input fields
-                    sets.forEach(set => {
-                        document.getElementById(`reps${set}`).value = '';
-                        document.getElementById(`weight${set}`).value = '';
-                    });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            })
-            .catch(error => {
-                console.error('Error retrieving file SHA:', error);
+                // Only add non-empty sets
+                if (reps && weight) {
+                    dataToSave += `Set ${set}: Reps: ${reps}, Weight: ${weight}\n`;
+                    displayData += `<tr><td><input type="checkbox" class="checkbox" /></td><td>${currentDate}</td><td>Set ${set}</td><td>${reps}</td><td>${weight}</td></tr>`;
+                }
             });
-    }
-}
 
-// Load saved data from Local Storage when the page loads
-window.onload = () => {
-    const savedDataBody = document.getElementById("savedDataBody");
-    let savedData = localStorage.getItem('workoutData');
-    if (savedData) {
-        savedData = JSON.parse(savedData);
-        savedData.forEach(entry => {
-            savedDataBody.innerHTML += entry.data;
-        });
-    }
-};
+            // Save the data to GitHub and local storage
+            if (dataToSave) {
+                fetch(scriptURL)
+                    .then(response => response.json())
+                    .then(data => {
+                        const sha = data.sha; // Get the file SHA
+
+                        const dataPayload = {
+                            message: "Save workout data",
+                            content: btoa(dataToSave),  // Base64 encode the content
+                            sha: sha,                   // Include the SHA
+                            branch: "main"
+                        };
+
+                        fetch(scriptURL, {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `token ${token}`,
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(dataPayload),
+                        })
+                        .then(response => response.json())
+                        .then(() => {
+                            console.log('Success: Data saved');
+                            // Append the new data to the display table
+                            const savedDataBody = document.getElementById("savedDataBody");
+                            savedDataBody.innerHTML += displayData;
+
+                            // Save the updated data to local storage
+                            let existingData = localStorage.getItem('workoutData');
+                            if (existingData) {
+                                existingData = JSON.parse(existingData);
+                            } else {
+                                existingData = [];
+                            }
+
+                            existingData.push({ date: currentDate, data: displayData });
+                            localStorage.setItem('workoutData', JSON.stringify(existingData));
+
+                            // Clear the input fields
+                            sets.forEach(set => {
+                                document.getElementById(`reps${set}`).value = '';
+                                document.getElementById(`weight${set}`).value = '';
+                            });
+
+                            // Update the max weight table with all the data
+                            updateMaxWeights();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    });
+            }
+        }
+
+        function updateMaxWeights() {
+            const maxWeights = {};
+            const savedData = JSON.parse(localStorage.getItem('workoutData')) || [];
+
+            console.log('Saved data:', savedData);  // Log the saved data to check its format
+
+            savedData.forEach(entry => {
+                const rows = entry.data.split('\n');
+                rows.forEach(row => {
+                    const match = row.match(/Reps: (\d+), Weight: (\d+)/);
+                    if (match) {
+                        const reps = parseInt(match[1]);
+                        const weight = parseInt(match[2]);
+
+                        if (!maxWeights[reps] || maxWeights[reps] < weight) {
+                            maxWeights[reps] = weight;
+                        }
+                    }
+                });
+            });
+
+            console.log('Max Weights:', maxWeights);  // Log the calculated max weights
+
+            // Now update the Max Weights table
+            const maxWeightsBody = document.getElementById("maxWeightsBody");
+            maxWeightsBody.innerHTML = ''; // Clear current max values
+
+            Object.keys(maxWeights).forEach(reps => {
+                const maxWeight = maxWeights[reps];
+                maxWeightsBody.innerHTML += `<tr><td>${reps}</td><td>${maxWeight}</td></tr>`;
+            });
+        }
+
+        function deleteSelected() {
+            const checkboxes = document.querySelectorAll('#savedDataBody input[type="checkbox"]:checked');
+            checkboxes.forEach(checkbox => {
+                checkbox.closest('tr').remove();
+            });
+        }
+
+        function deleteAll() {
+            const confirmDelete = document.getElementById('confirmDeleteAll').checked;
+            if (confirmDelete) {
+                const savedDataBody = document.getElementById("savedDataBody");
+                savedDataBody.innerHTML = ''; // Clear all saved data
+
+                // Also clear local storage
+                localStorage.removeItem('workoutData');
+                updateMaxWeights(); // Recalculate max weights
+            }
+        }
+
+        // On load, load existing saved data
+        window.onload = function() {
+            const savedData = JSON.parse(localStorage.getItem('workoutData')) || [];
+            const savedDataBody = document.getElementById("savedDataBody");
+
+            savedData.forEach(entry => {
+                savedDataBody.innerHTML += entry.data;
+            });
+
+            // Call updateMaxWeights on page load to populate max weights table
+            updateMaxWeights();
+        }
+    </script>
+</body>
+</html>
