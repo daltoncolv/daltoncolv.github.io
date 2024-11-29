@@ -217,17 +217,21 @@
 
             savedData.forEach(entry => {
                 // Parse the data from saved HTML rows
-                const rows = entry.data.split('</tr>');
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(entry.data, 'text/html');
+                const rows = doc.querySelectorAll('tr');
 
                 rows.forEach(row => {
-                    const match = row.match(/Reps: (\d+), Weight: (\d+)/);
-                    if (match) {
-                        const reps = parseInt(match[1]);
-                        const weight = parseInt(match[2]);
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length > 0) {
+                        const reps = parseInt(cells[3].textContent);
+                        const weight = parseInt(cells[4].textContent);
 
                         // Update maxWeights object
-                        if (!maxWeights[reps] || maxWeights[reps] < weight) {
-                            maxWeights[reps] = weight;
+                        if (!isNaN(reps) && !isNaN(weight)) {
+                            if (!maxWeights[reps] || maxWeights[reps] < weight) {
+                                maxWeights[reps] = weight;
+                            }
                         }
                     }
                 });
@@ -246,12 +250,15 @@
             });
         }
 
-
         function deleteSelected() {
             const checkboxes = document.querySelectorAll('#savedDataBody input[type="checkbox"]:checked');
             checkboxes.forEach(checkbox => {
                 checkbox.closest('tr').remove();
             });
+
+            // Update the local storage and max weights
+            updateLocalStorage();
+            updateMaxWeights();
         }
 
         function deleteAll() {
@@ -264,6 +271,21 @@
                 localStorage.removeItem('workoutData');
                 updateMaxWeights(); // Recalculate max weights
             }
+        }
+
+        function updateLocalStorage() {
+            const savedDataBody = document.getElementById("savedDataBody");
+            const rows = savedDataBody.querySelectorAll('tr');
+            const dataToSave = [];
+
+            rows.forEach(row => {
+                dataToSave.push({
+                    date: row.cells[1].textContent,
+                    data: row.outerHTML
+                });
+            });
+
+            localStorage.setItem('workoutData', JSON.stringify(dataToSave));
         }
 
         // On load, load existing saved data
