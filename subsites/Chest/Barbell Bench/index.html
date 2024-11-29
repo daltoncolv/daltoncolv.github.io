@@ -225,9 +225,12 @@
                 console.log(`Processing saved data entry ${index + 1}:`, entry);
                 console.log(`Raw entry data:`, entry.data); // Log the raw HTML data to check its structure
         
+                // Wrap the rows in a <table> to help the parser recognize them as valid rows
+                const wrappedHtml = `<table>${entry.data}</table>`;
+        
                 // Parse the data from saved HTML rows
                 const parser = new DOMParser();
-                const doc = parser.parseFromString(entry.data, 'text/html');
+                const doc = parser.parseFromString(wrappedHtml, 'text/html');
                 
                 // Log the parsed document to verify it
                 console.log(`Parsed document for entry ${index + 1}:`, doc);
@@ -277,6 +280,7 @@
                 maxWeightsBody.innerHTML += `<tr><td>${reps}</td><td>${maxWeight}</td></tr>`;
             });
         }
+
 
 
 
