@@ -244,9 +244,9 @@
 
                     console.log(`Reps Text: ${repsText}, Weight Text: ${weightText}`);
 
-                    // Ensure the value after ": " is correctly extracted
-                    const numReps = parseInt(repsText.split(': ')[1], 10);
-                    const numWeight = parseInt(weightText.split(': ')[1], 10);
+                    // Extract numbers after 'Reps: ' and 'Weight: '
+                    const numReps = parseInt(repsText.split(':')[1]?.trim(), 10);  // Only get the part after ':'
+                    const numWeight = parseInt(weightText.split(':')[1]?.trim(), 10);
 
                     console.log(`Parsed Reps: ${numReps}, Parsed Weight: ${numWeight}`);
 
