@@ -148,6 +148,9 @@
     </div>
 
     <script>
+        // Define a unique key for this specific website
+        const uniqueKey = 'BarbellBench'; // You can change this value for different sites
+
         const scriptURL = 'https://api.github.com/repos/daltoncolv/daltoncolv.github.io/contents/subsites/Chest/Barbell%20Bench/data.txt';
         const token = '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'; // Your GitHub Token
 
@@ -198,8 +201,8 @@
                             const savedDataBody = document.getElementById("savedDataBody");
                             savedDataBody.innerHTML += displayData;
 
-                            // Save the updated data to local storage
-                            let existingData = localStorage.getItem('workoutData');
+                            // Save the updated data to local storage with the unique key
+                            let existingData = localStorage.getItem(uniqueKey);
                             if (existingData) {
                                 existingData = JSON.parse(existingData);
                             } else {
@@ -207,7 +210,7 @@
                             }
 
                             existingData.push({ date: currentDate, data: displayData });
-                            localStorage.setItem('workoutData', JSON.stringify(existingData));
+                            localStorage.setItem(uniqueKey, JSON.stringify(existingData));
 
                             // Clear the input fields
                             sets.forEach(set => {
@@ -270,44 +273,28 @@
         }
 
         function deleteSelected() {
-            const checkboxes = document.querySelectorAll('#savedDataBody .checkbox');
-            const savedDataBody = document.getElementById("savedDataBody");
-
-            checkboxes.forEach((checkbox, index) => {
-                if (checkbox.checked) {
-                    const row = checkbox.closest('tr');
-                    savedDataBody.removeChild(row);
-                }
+            const checkboxes = document.querySelectorAll('.checkbox:checked');
+            checkboxes.forEach(checkbox => {
+                const row = checkbox.closest('tr');
+                row.remove();
             });
-
-            const updatedData = Array.from(savedDataBody.querySelectorAll('tr')).map(row => row.outerHTML);
-            localStorage.setItem('workoutData', JSON.stringify([{ data: updatedData.join('') }]));
-
-            updateMaxWeights();
         }
 
         function deleteAll() {
-            const confirmDelete = document.getElementById("confirmDeleteAll").checked;
-            if (confirmDelete) {
-                localStorage.removeItem('workoutData');
-                const savedDataBody = document.getElementById("savedDataBody");
-                savedDataBody.innerHTML = '';
-
-                const maxWeightsBody = document.getElementById("maxWeightsBody");
-                maxWeightsBody.innerHTML = '';
+            const confirmDelete = document.getElementById('confirmDeleteAll');
+            if (confirmDelete.checked) {
+                localStorage.removeItem(uniqueKey);
+                document.getElementById('savedDataBody').innerHTML = '';
+                updateMaxWeights();
+            } else {
+                alert("Please confirm deletion.");
             }
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedData = JSON.parse(localStorage.getItem('workoutData')) || [];
-            const savedDataBody = document.getElementById("savedDataBody");
-
-            savedData.forEach(entry => {
-                savedDataBody.innerHTML += entry.data;
-            });
-
+        // Initialize the saved data and max weights on page load
+        window.onload = function() {
             updateMaxWeights();
-        });
+        }
     </script>
 </body>
 </html>
