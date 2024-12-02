@@ -31,7 +31,7 @@
         .grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr); /* 2 columns */
-            grid-template-rows: repeat(9, 1fr); /* 9 rows */
+            grid-template-rows: auto; /* Automatically adjust the number of rows */
             gap: 20px; /* Space between grid items */
             width: 90%; /* Full width but with 5% margin on each side */
             margin: 20px auto; /* Center the grid container */
@@ -46,6 +46,7 @@
             height: 200px; /* Same height as before */
             border-radius: 10px; /* Rounded corners for grid cells */
             overflow: hidden; /* Ensures content doesn't overflow the grid item */
+            text-align: center; /* Center text within the grid item */
         }
         .grid-item a {
             background-color: #FFD700; /* Button background color */
@@ -62,6 +63,8 @@
             align-items: center;
             justify-content: center;
             box-sizing: border-box; /* Ensures padding is included in the width calculation */
+            text-align: center; /* Center text within the button */
+            overflow-wrap: break-word; /* Ensure text breaks onto multiple lines if necessary */
         }
         .grid-item a:hover {
             background-color: #FFC107; /* Change color on hover */
