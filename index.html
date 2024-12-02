@@ -46,17 +46,33 @@
             background-color: #333; /* Background color for grid items */
             padding: 20px; /* Padding inside grid items */
             border-radius: 10px; /* Rounded corners for grid items */
-            display: flex;
-            flex-direction: row; /* Arrange content horizontally */
-            align-items: center; /* Align items vertically centered */
-            justify-content: flex-start; /* Align items to the left */
+            display: flex; /* Use flexbox to align items */
+            align-items: center; /* Vertically align content */
+            justify-content: flex-start; /* Align content to the left */
             height: 300px; /* Increase cell height */
-            gap: 15px; /* Space between image, button, and text */
+            gap: 15px; /* Space between the image, button, and table */
         }
         .grid-item img {
             max-height: 250px; /* Upsized images */
             object-fit: contain; /* Ensure images fit within the container */
             border-radius: 15px; /* Rounded corners for images */
+        }
+        .grid-item table {
+            width: 50%; /* Table takes 50% of the width of the grid item */
+            border-collapse: collapse;
+            text-align: center;
+        }
+        .grid-item table, .grid-item th, .grid-item td {
+            border: 1px solid #FFD700; /* Golden border */
+        }
+        .grid-item th, .grid-item td {
+            padding: 8px;
+        }
+        .grid-item th {
+            background-color: #444; /* Darker header background */
+        }
+        .grid-item td {
+            background-color: #555; /* Slightly lighter background for cells */
         }
         .grid-item a {
             text-decoration: none; /* Remove underline from links */
@@ -68,16 +84,10 @@
             padding: 20px 40px; /* Reduce button padding to downsize */
             border-radius: 15px; /* Rounded corners for buttons */
             cursor: pointer; /* Pointer cursor on hover */
-            margin-top: 10px; /* Margin on top of the button */
             font-size: 2em; /* Reduce font size to downsize */
         }
         .grid-item button:hover {
             background-color: #FFC107; /* Change color on hover */
-        }
-        .grid-item span {
-            color: white; /* Text color */
-            font-size: 1.2em; /* Adjust text size */
-            margin-left: 15px; /* Space between button and text */
         }
     </style>
 </head>
@@ -90,52 +100,236 @@
         <div class="grid-item">
             <img src="images/Chest.jpg" alt="Chest">
             <a href="https://daltoncolv.github.io/subsites/Chest/"><button>Chest</button></a>
-            <span>Barbell Bench: 8 x </span>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Exercise</th>
+                        <th>Weight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Barbell Bench</td>
+                        <td>8 x 10</td>
+                    </tr>
+                    <tr>
+                        <td>Push Ups</td>
+                        <td>4 x 15</td>
+                    </tr>
+                    <tr>
+                        <td>Chest Fly</td>
+                        <td>3 x 12</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="grid-item">
             <img src="images/Back.jpg" alt="Back">
             <a href="https://daltoncolv.github.io/subsites/Back/"><button>Back</button></a>
-            <span>Back exercises for posture</span>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Exercise</th>
+                        <th>Weight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Pull Ups</td>
+                        <td>4 x 10</td>
+                    </tr>
+                    <tr>
+                        <td>Rows</td>
+                        <td>4 x 12</td>
+                    </tr>
+                    <tr>
+                        <td>Lat Pulldowns</td>
+                        <td>3 x 12</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="grid-item">
             <img src="images/Shoulders.jpg" alt="Shoulders">
             <a href="https://daltoncolv.github.io/subsites/Shoulders/"><button>Shoulders</button></a>
-            <span>Shoulder exercises for stability</span>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Exercise</th>
+                        <th>Weight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Overhead Press</td>
+                        <td>4 x 8</td>
+                    </tr>
+                    <tr>
+                        <td>Lateral Raises</td>
+                        <td>3 x 12</td>
+                    </tr>
+                    <tr>
+                        <td>Arnold Press</td>
+                        <td>3 x 10</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="grid-item">
             <img src="images/Tricep.jpg" alt="Triceps">
             <a href="https://daltoncolv.github.io/subsites/Triceps/"><button>Triceps</button></a>
-            <span>Triceps exercises for arm strength</span>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Exercise</th>
+                        <th>Weight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Tricep Dips</td>
+                        <td>3 x 10</td>
+                    </tr>
+                    <tr>
+                        <td>Skull Crushers</td>
+                        <td>4 x 8</td>
+                    </tr>
+                    <tr>
+                        <td>Tricep Pushdowns</td>
+                        <td>3 x 12</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="grid-item">
             <img src="images/Bicep.jpg" alt="Biceps">
             <a href="https://daltoncolv.github.io/subsites/Biceps/"><button>Biceps</button></a>
-            <span>Biceps exercises for growth</span>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Exercise</th>
+                        <th>Weight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bicep Curls</td>
+                        <td>4 x 10</td>
+                    </tr>
+                    <tr>
+                        <td>Hammer Curls</td>
+                        <td>3 x 12</td>
+                    </tr>
+                    <tr>
+                        <td>Preacher Curls</td>
+                        <td>4 x 8</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="grid-item">
             <img src="images/Quads.jpg" alt="Quads">
             <a href="https://daltoncolv.github.io/subsites/Quads/"><button>Quads</button></a>
-            <span>Quads exercises for leg power</span>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Exercise</th>
+                        <th>Weight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Squats</td>
+                        <td>4 x 8</td>
+                    </tr>
+                    <tr>
+                        <td>Lunges</td>
+                        <td>3 x 12</td>
+                    </tr>
+                    <tr>
+                        <td>Leg Press</td>
+                        <td>4 x 10</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="grid-item">
             <img src="images/Hamstrings.jpg" alt="Hamstrings">
             <a href="https://daltoncolv.github.io/subsites/Hamstrings/"><button>Hamstrings</button></a>
-            <span>Hamstrings exercises for flexibility</span>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Exercise</th>
+                        <th>Weight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Deadlifts</td>
+                        <td>4 x 8</td>
+                    </tr>
+                    <tr>
+                        <td>Hamstring Curls</td>
+                        <td>3 x 12</td>
+                    </tr>
+                    <tr>
+                        <td>Romanian Deadlifts</td>
+                        <td>3 x 10</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="grid-item">
-            <img src="images/calves.png" alt="Calves">
+            <img src="images/Calves.jpg" alt="Calves">
             <a href="https://daltoncolv.github.io/subsites/Calves/"><button>Calves</button></a>
-            <span>Calf exercises for lower body strength</span>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Exercise</th>
+                        <th>Weight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Calf Raises</td>
+                        <td>4 x 15</td>
+                    </tr>
+                    <tr>
+                        <td>Seated Calf Raises</td>
+                        <td>4 x 12</td>
+                    </tr>
+                    <tr>
+                        <td>Standing Calf Raises</td>
+                        <td>3 x 15</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="grid-item">
-            <img src="images/abs.png" alt="Abs">
+            <img src="images/Abs.jpg" alt="Abs">
             <a href="https://daltoncolv.github.io/subsites/Abs/"><button>Abs</button></a>
-            <span>Ab exercises for core stability</span>
-        </div>
-        <div class="grid-item">
-            <img src="images/cardio.png" alt="Cardio">
-            <a href="https://daltoncolv.github.io/subsites/Cardio/"><button>Cardio</button></a>
-            <span>Cardio exercises for endurance</span>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Exercise</th>
+                        <th>Weight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Crunches</td>
+                        <td>4 x 20</td>
+                    </tr>
+                    <tr>
+                        <td>Leg Raises</td>
+                        <td>4 x 15</td>
+                    </tr>
+                    <tr>
+                        <td>Planks</td>
+                        <td>3 x 1 min</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
     <script>
