@@ -239,17 +239,15 @@
                 const rows = doc.querySelectorAll('tr');
 
                 rows.forEach(row => {
-                    const repsText = row.cells[3].textContent;  // reps is in the fourth column
-                    const weightText = row.cells[4].textContent; // weight is in the fifth column
+                    const repsText = row.cells[3].textContent.trim();  // reps is in the fourth column
+                    const weightText = row.cells[4].textContent.trim(); // weight is in the fifth column
 
-                    // Log the raw data for debugging
                     console.log(`Reps Text: ${repsText}, Weight Text: ${weightText}`);
 
-                    // Check if the values are valid numbers
-                    const numReps = parseInt(repsText.split(': ')[1], 10); // Parse the reps value as an integer
-                    const numWeight = parseInt(weightText.split(': ')[1], 10); // Parse the weight value as an integer
+                    // Ensure the value after ": " is correctly extracted
+                    const numReps = parseInt(repsText.split(': ')[1], 10);
+                    const numWeight = parseInt(weightText.split(': ')[1], 10);
 
-                    // Log the parsed numbers
                     console.log(`Parsed Reps: ${numReps}, Parsed Weight: ${numWeight}`);
 
                     // Only process valid numbers
@@ -271,6 +269,7 @@
                 maxWeightsBody.innerHTML += row;
             }
         }
+
 
         function deleteSelected() {
             const checkboxes = document.querySelectorAll('.checkbox:checked');
