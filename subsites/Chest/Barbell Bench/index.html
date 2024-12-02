@@ -74,6 +74,21 @@
         .delete-section label {
             margin-right: 10px;
         }
+        /* New styling for Delete All section */
+        .delete-all-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .delete-all-section input[type="checkbox"] {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .delete-all-section button {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -98,6 +113,17 @@
     </table>
     <button class="submit-btn" onclick="submitData()">Submit</button>
 
+    <!-- New Table for Max Weight per Reps -->
+    <table id="maxWeights">
+        <thead>
+            <tr>
+                <th>Reps</th>
+                <th>Max Weight</th>
+            </tr>
+        </thead>
+        <tbody id="maxWeightsBody"></tbody>
+    </table>
+
     <!-- Display the saved data -->
     <table id="savedData">
         <thead>
@@ -112,23 +138,13 @@
         <tbody id="savedDataBody"></tbody>
     </table>
 
-    <!-- New Table for Max Weight per Reps -->
-    <table id="maxWeights">
-        <thead>
-            <tr>
-                <th>Reps</th>
-                <th>Max Weight</th>
-            </tr>
-        </thead>
-        <tbody id="maxWeightsBody"></tbody>
-    </table>
-
     <button class="delete-btn" onclick="deleteSelected()">Delete Selected</button>
 
-    <div class="delete-section">
+    <!-- Delete All Section -->
+    <div class="delete-all-section">
+        <button class="delete-btn" onclick="deleteAll()" id="deleteAllBtn">Delete All</button>
         <input type="checkbox" id="confirmDeleteAll" />
         <label for="confirmDeleteAll" style="color: #FFD700;">Confirm Deletion</label>
-        <button class="delete-btn" onclick="deleteAll()" id="deleteAllBtn">Delete All</button>
     </div>
 
     <script>
@@ -212,118 +228,68 @@
         function updateMaxWeights() {
             const maxWeights = {};
             const savedData = JSON.parse(localStorage.getItem('workoutData')) || [];
-        
-            console.log('Saved data:', savedData);  // Log the saved data to check its format
-        
-            if (savedData.length === 0) {
-                console.log('No saved data found.');
-                return;
-            }
-        
-            savedData.forEach((entry, index) => {
-                // Log the entry we are currently processing, especially the raw data
-                console.log(`Processing saved data entry ${index + 1}:`, entry);
-                console.log(`Raw entry data:`, entry.data); // Log the raw HTML data to check its structure
-        
-                // Wrap the rows in a <table> to help the parser recognize them as valid rows
-                const wrappedHtml = `<table>${entry.data}</table>`;
-        
-                // Parse the data from saved HTML rows
+
+            savedData.forEach(entry => {
+                const wrappedHtml = `<table><tbody>${entry.data}</tbody></table>`;
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(wrappedHtml, 'text/html');
-                
-                // Log the parsed document to verify it
-                console.log(`Parsed document for entry ${index + 1}:`, doc);
-        
                 const rows = doc.querySelectorAll('tr');
-                console.log(`Rows found:`, rows);  // Log how many rows are found
-        
-                if (rows.length === 0) {
-                    console.log(`No rows found in entry ${index + 1}`);
-                    return;
-                }
-        
-                rows.forEach((row, rowIndex) => {
+
+                rows.forEach(row => {
                     const cells = row.querySelectorAll('td');
-        
-                    if (cells.length !== 5) { // Log if the row doesn't have the expected number of cells
-                        console.log(`Row ${rowIndex + 1} in entry ${index + 1} doesn't have the expected number of cells. Skipping.`);
-                        return;
-                    }
-        
-                    // Extracting the reps and weight values from the table cells
-                    const reps = parseInt(cells[3].textContent.trim());
-                    const weight = parseInt(cells[4].textContent.trim());
-        
-                    console.log(`Extracted reps: ${reps}, weight: ${weight}`);  // Log extracted values
-        
-                    // Only process valid numeric reps and weights
+                    const reps = cells[3].textContent;
+                    const weight = cells[4].textContent;
+
                     if (!isNaN(reps) && !isNaN(weight)) {
-                        if (!maxWeights[reps] || maxWeights[reps] < weight) {
-                            maxWeights[reps] = weight;
+                        const repsInt = parseInt(reps);
+                        const weightFloat = parseFloat(weight);
+
+                        if (!maxWeights[repsInt] || weightFloat > maxWeights[repsInt]) {
+                            maxWeights[repsInt] = weightFloat;
                         }
-                    } else {
-                        console.log(`Invalid reps or weight detected at row ${rowIndex + 1}. Skipping this row.`);
                     }
                 });
             });
-        
-            console.log('Max Weights after processing all entries:', maxWeights);  // Log the final max weights object
-        
-            // Now update the Max Weights table
+
             const maxWeightsBody = document.getElementById("maxWeightsBody");
-            maxWeightsBody.innerHTML = ''; // Clear current max values
-        
-            // Populate the max weights table with data
-            Object.keys(maxWeights).forEach(reps => {
-                const maxWeight = maxWeights[reps];
-                maxWeightsBody.innerHTML += `<tr><td>${reps}</td><td>${maxWeight}</td></tr>`;
+            maxWeightsBody.innerHTML = ''; // Clear existing data
+
+            Object.keys(maxWeights).sort((a, b) => a - b).forEach(reps => {
+                const weight = maxWeights[reps];
+                maxWeightsBody.innerHTML += `<tr><td>${reps}</td><td>${weight}</td></tr>`;
             });
         }
 
-
-
-
         function deleteSelected() {
-            const checkboxes = document.querySelectorAll('#savedDataBody input[type="checkbox"]:checked');
-            checkboxes.forEach(checkbox => {
-                checkbox.closest('tr').remove();
+            const checkboxes = document.querySelectorAll('#savedDataBody .checkbox');
+            const savedDataBody = document.getElementById("savedDataBody");
+
+            checkboxes.forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    const row = checkbox.closest('tr');
+                    savedDataBody.removeChild(row);
+                }
             });
 
-            // Update the local storage and max weights
-            updateLocalStorage();
+            const updatedData = Array.from(savedDataBody.querySelectorAll('tr')).map(row => row.outerHTML);
+            localStorage.setItem('workoutData', JSON.stringify([{ data: updatedData.join('') }]));
+
             updateMaxWeights();
         }
 
         function deleteAll() {
-            const confirmDelete = document.getElementById('confirmDeleteAll').checked;
+            const confirmDelete = document.getElementById("confirmDeleteAll").checked;
             if (confirmDelete) {
-                const savedDataBody = document.getElementById("savedDataBody");
-                savedDataBody.innerHTML = ''; // Clear all saved data
-
-                // Also clear local storage
                 localStorage.removeItem('workoutData');
-                updateMaxWeights(); // Recalculate max weights
+                const savedDataBody = document.getElementById("savedDataBody");
+                savedDataBody.innerHTML = '';
+
+                const maxWeightsBody = document.getElementById("maxWeightsBody");
+                maxWeightsBody.innerHTML = '';
             }
         }
 
-        function updateLocalStorage() {
-            const savedDataBody = document.getElementById("savedDataBody");
-            const rows = savedDataBody.querySelectorAll('tr');
-            const dataToSave = [];
-
-            rows.forEach(row => {
-                dataToSave.push({
-                    date: row.cells[1].textContent,
-                    data: row.outerHTML
-                });
-            });
-
-            localStorage.setItem('workoutData', JSON.stringify(dataToSave));
-        }
-
-        // On load, load existing saved data
-        window.onload = function() {
+        document.addEventListener("DOMContentLoaded", () => {
             const savedData = JSON.parse(localStorage.getItem('workoutData')) || [];
             const savedDataBody = document.getElementById("savedDataBody");
 
@@ -331,9 +297,8 @@
                 savedDataBody.innerHTML += entry.data;
             });
 
-            // Call updateMaxWeights on page load to populate max weights table
             updateMaxWeights();
-        }
+        });
     </script>
 </body>
 </html>
