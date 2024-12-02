@@ -235,13 +235,16 @@
 
             checkboxes.forEach(checkbox => {
                 const row = checkbox.closest('tr');
-                const rowIndex = Array.from(row.parentNode.children).indexOf(row);
+                const date = row.cells[1].textContent;  // Get the date of the row (column 2)
+                const set = row.cells[2].textContent;  // Get the set (column 3)
+                const reps = row.cells[3].textContent;  // Get the reps (column 4)
+                const weight = row.cells[4].textContent;  // Get the weight (column 5)
 
                 // Remove the row from the display
                 row.remove();
 
-                // Remove the row's data from the savedData array in localStorage
-                savedData.splice(rowIndex, 1);
+                // Find and remove the corresponding data from the savedData array
+                savedData = savedData.filter(entry => !(entry.date === date && entry.set === set && entry.reps === reps && entry.weight === weight));
 
                 // Update localStorage with the new data
                 localStorage.setItem(uniqueKey, JSON.stringify(savedData));
@@ -250,6 +253,7 @@
             // Update max weights table after deletion
             updateMaxWeights();
         }
+
 
 
         // Delete all data with confirmation
