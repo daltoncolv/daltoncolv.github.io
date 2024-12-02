@@ -296,18 +296,24 @@
                 const row = checkbox.closest('tr');
                 row.remove();
             });
+            
+            // After deleting the selected rows, update the max weights
+            updateMaxWeights();
         }
-
+        
         function deleteAll() {
             const confirmDelete = document.getElementById('confirmDeleteAll');
             if (confirmDelete.checked) {
                 localStorage.removeItem(uniqueKey);
                 document.getElementById('savedDataBody').innerHTML = '';
+                
+                // After deleting all data, update the max weights
                 updateMaxWeights();
             } else {
                 alert("Please confirm deletion.");
             }
         }
+
 
         // Initialize the saved data and max weights on page load
         window.onload = function() {
