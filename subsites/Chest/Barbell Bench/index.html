@@ -244,7 +244,12 @@
                 row.remove();
 
                 // Find and remove the corresponding data from the savedData array
-                savedData = savedData.filter(entry => !(entry.date === date && entry.set === set && entry.reps === reps && entry.weight === weight));
+                savedData = savedData.map(entry => {
+                    if (entry.date === date) {
+                        entry.data = entry.data.filter(item => !(item.set === set && item.reps === reps && item.weight === weight));
+                    }
+                    return entry;
+                });
 
                 // Update localStorage with the new data
                 localStorage.setItem(uniqueKey, JSON.stringify(savedData));
