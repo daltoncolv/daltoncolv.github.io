@@ -153,26 +153,26 @@
         // Save data to localStorage and display on page
         function submitData() {
             const sets = ['1', '2', '3', '4', '5', '6'];
-            let dataToSave = [];
+            let dataToSave = '';
             let displayData = '';
             const currentDate = new Date().toLocaleDateString(); // Get the current date
 
             // Collect data from each set
             sets.forEach(set => {
-                const reps = document.getElementById(`reps${set}`).value;
-                const weight = document.getElementById(`weight${set}`).value;
+                const reps = document.getElementById(reps${set}).value;
+                const weight = document.getElementById(weight${set}).value;
 
                 // Only add sets with both reps and weight
                 if (reps && weight) {
-                    dataToSave.push({ set: `Set ${set}`, reps, weight });
-                    displayData += `<tr><td><input type="checkbox" class="checkbox" /></td><td>${currentDate}</td><td>Set ${set}</td><td>${reps}</td><td>${weight}</td></tr>`;
+                    dataToSave += Set ${set}: Reps: ${reps}, Weight: ${weight}\n;
+                    displayData += <tr><td><input type="checkbox" class="checkbox" /></td><td>${currentDate}</td><td>Set ${set}</td><td>${reps}</td><td>${weight}</td></tr>;
                 }
             });
 
-            if (dataToSave.length > 0) {
-                // Save to localStorage with the current date and structured data
+            if (dataToSave) {
+                // Save to localStorage
                 let savedData = JSON.parse(localStorage.getItem(uniqueKey)) || [];
-                savedData.push({ date: currentDate, data: dataToSave });
+                savedData.push({ date: currentDate, data: displayData });
                 localStorage.setItem(uniqueKey, JSON.stringify(savedData));
 
                 // Append to table
@@ -181,8 +181,8 @@
 
                 // Clear input fields
                 sets.forEach(set => {
-                    document.getElementById(`reps${set}`).value = '';
-                    document.getElementById(`weight${set}`).value = '';
+                    document.getElementById(reps${set}).value = '';
+                    document.getElementById(weight${set}).value = '';
                 });
 
                 // Update max weights table
@@ -195,7 +195,7 @@
             const maxWeights = {};
             const savedData = JSON.parse(localStorage.getItem(uniqueKey)) || [];
             savedData.forEach(entry => {
-                const rows = new DOMParser().parseFromString(`<table><tbody>${entry.data}</tbody></table>`, 'text/html').querySelectorAll('tr');
+                const rows = new DOMParser().parseFromString(<table><tbody>${entry.data}</tbody></table>, 'text/html').querySelectorAll('tr');
                 rows.forEach(row => {
                     const reps = row.cells[3].textContent.trim();
                     const weight = row.cells[4].textContent.trim();
@@ -212,7 +212,7 @@
             const maxWeightsBody = document.getElementById('maxWeightsBody');
             maxWeightsBody.innerHTML = '';
             for (const reps in maxWeights) {
-                maxWeightsBody.innerHTML += `<tr><td>${reps}</td><td>${maxWeights[reps]}</td></tr>`;
+                maxWeightsBody.innerHTML += <tr><td>${reps}</td><td>${maxWeights[reps]}</td></tr>;
             }
         }
 
@@ -244,12 +244,7 @@
                 row.remove();
 
                 // Find and remove the corresponding data from the savedData array
-                savedData = savedData.map(entry => {
-                    if (entry.date === date) {
-                        entry.data = entry.data.filter(item => !(item.set === set && item.reps === reps && item.weight === weight));
-                    }
-                    return entry;
-                });
+                savedData = savedData.filter(entry => !(entry.date === date && entry.set === set && entry.reps === reps && entry.weight === weight));
 
                 // Update localStorage with the new data
                 localStorage.setItem(uniqueKey, JSON.stringify(savedData));
