@@ -226,18 +226,31 @@
             updateMaxWeights();
         };
 
-        // Delete selected rows
+        // Delete selected rows and update localStorage
         function deleteSelected() {
             const checkboxes = document.querySelectorAll("#savedData input[type='checkbox']:checked");
+
+            // Get the saved data from localStorage
+            let savedData = JSON.parse(localStorage.getItem(uniqueKey)) || [];
+
             checkboxes.forEach(checkbox => {
                 const row = checkbox.closest('tr');
-                row.remove();
-                const savedData = JSON.parse(localStorage.getItem(uniqueKey)) || [];
                 const rowIndex = Array.from(row.parentNode.children).indexOf(row);
+
+                // Remove the row from the display
+                row.remove();
+
+                // Remove the row's data from the savedData array in localStorage
                 savedData.splice(rowIndex, 1);
+
+                // Update localStorage with the new data
                 localStorage.setItem(uniqueKey, JSON.stringify(savedData));
             });
+
+            // Update max weights table after deletion
+            updateMaxWeights();
         }
+
 
         // Delete all data with confirmation
         function deleteAll() {
