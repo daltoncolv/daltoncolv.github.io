@@ -104,7 +104,7 @@
                 <thead>
                     <tr>
                         <th>Exercise</th>
-                        <th>Weight</th>
+                        <th>Sets</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -117,7 +117,7 @@
                         <td>4 x 15</td>
                     </tr>
                     <tr>
-                        <td>Dumbbell Incline</td>
+                        <td>Chest Fly</td>
                         <td>3 x 12</td>
                     </tr>
                 </tbody>
@@ -130,7 +130,7 @@
                 <thead>
                     <tr>
                         <th>Exercise</th>
-                        <th>Weight</th>
+                        <th>Sets</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -156,7 +156,7 @@
                 <thead>
                     <tr>
                         <th>Exercise</th>
-                        <th>Weight</th>
+                        <th>Sets</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -182,7 +182,7 @@
                 <thead>
                     <tr>
                         <th>Exercise</th>
-                        <th>Weight</th>
+                        <th>Sets</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -208,7 +208,7 @@
                 <thead>
                     <tr>
                         <th>Exercise</th>
-                        <th>Weight</th>
+                        <th>Sets</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -234,7 +234,7 @@
                 <thead>
                     <tr>
                         <th>Exercise</th>
-                        <th>Weight</th>
+                        <th>Sets</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -260,7 +260,7 @@
                 <thead>
                     <tr>
                         <th>Exercise</th>
-                        <th>Weight</th>
+                        <th>Sets</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -286,7 +286,7 @@
                 <thead>
                     <tr>
                         <th>Exercise</th>
-                        <th>Weight</th>
+                        <th>Sets</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -312,33 +312,7 @@
                 <thead>
                     <tr>
                         <th>Exercise</th>
-                        <th>Weight</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Crunches</td>
-                        <td>4 x 20</td>
-                    </tr>
-                    <tr>
-                        <td>Leg Raises</td>
-                        <td>4 x 15</td>
-                    </tr>
-                    <tr>
-                        <td>Planks</td>
-                        <td>3 x 1 min</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="grid-item">
-            <img src="images/Cardio.jpg" alt="Cardio">
-            <a href="https://daltoncolv.github.io/subsites/Cardio/"><button>Cardio</button></a>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Exercise</th>
-                        <th>Weight</th>
+                        <th>Sets</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -376,6 +350,33 @@
                 }
             }
         }
+        // Function to update the weight in the table from saved max weights
+        function updateWeights() {
+            // Get the saved max weight for "Barbell Bench" from localStorage
+            const maxWeightFor8Reps = localStorage.getItem('maxWeightFor8Reps_Barbell Bench');
+            const maxWeightFor8RepsDumbbellBench = localStorage.getItem('maxWeightFor8Reps_Dumbbell Bench'); // Similar for other exercises
+
+            // Get all the rows in the table
+            const tableRows = document.querySelectorAll('#gridContainer .grid-item table tbody tr');
+
+            // Loop through each row and update the "Weight" column
+            tableRows.forEach(row => {
+                const exerciseName = row.cells[0].textContent;  // Get the exercise name from the first cell
+                const weightCell = row.cells[1];  // The second cell contains the weight
+
+                // Check for each exercise and update the weight based on the max weight
+                if (exerciseName === 'Barbell Bench' && maxWeightFor8Reps) {
+                    weightCell.textContent = `${maxWeightFor8Reps} lbs`;
+                } else if (exerciseName === 'Dumbbell Bench' && maxWeightFor8RepsDumbbellBench) {
+                    weightCell.textContent = `${maxWeightFor8RepsDumbbellBench} lbs`;
+                }
+                // Add similar conditions for other exercises as needed
+            });
+        }
+
+        // Call the update function on page load
+        document.addEventListener("DOMContentLoaded", updateWeights);
+
     </script>
 </body>
 </html>
