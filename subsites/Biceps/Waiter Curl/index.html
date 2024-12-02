@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waiter Curl</title>
+    <title>Barbell Bench</title>
     <style>
         body {
             background-color: black;
@@ -92,7 +92,7 @@
     </style>
 </head>
 <body>
-    <h1>Waiter Curl</h1>
+    <h1>Barbell Bench</h1>
     <table>
         <thead>
             <tr>
@@ -151,7 +151,7 @@
         const scriptURL = 'https://api.github.com/repos/daltoncolv/daltoncolv.github.io/contents/subsites/Chest/Barbell%20Bench/data.txt';
         const token = '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'; // Your GitHub Token
 
-        const pageIdentifier = "Waiter Curl";  // Unique identifier for this page
+        const pageIdentifier = "Barbell Bench";  // Unique identifier for this page
         const savedDataKey = `workoutData_${pageIdentifier}`;  // Key for localStorage
 
         function submitData() {
@@ -197,9 +197,9 @@
                         .then(response => response.json())
                         .then(() => {
                             console.log('Success: Data saved');
-                            // Append the new data to the display table
+                            // Insert the new data at the top of the display table
                             const savedDataBody = document.getElementById("savedDataBody");
-                            savedDataBody.innerHTML += displayData;
+                            savedDataBody.insertAdjacentHTML('afterbegin', displayData); // Insert at the top
 
                             // Save the updated data to local storage for the specific page
                             let existingData = localStorage.getItem(savedDataKey);
@@ -209,7 +209,7 @@
                                 existingData = [];
                             }
 
-                            existingData.push({ date: currentDate, data: displayData });
+                            existingData.unshift({ date: currentDate, data: displayData }); // Add at the start of the array
                             localStorage.setItem(savedDataKey, JSON.stringify(existingData));
 
                             // Clear the input fields
@@ -228,9 +228,11 @@
             }
         }
 
+
         function updateMaxWeights() {
             const maxWeights = {};
             const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
+            let maxWeightFor8Reps = 0;
 
             savedData.forEach(entry => {
                 const wrappedHtml = `<table><tbody>${entry.data}</tbody></table>`;
@@ -250,9 +252,17 @@
                         if (!maxWeights[repsInt] || weightFloat > maxWeights[repsInt]) {
                             maxWeights[repsInt] = weightFloat;
                         }
+
+                        // Save max weight for 8 reps
+                        if (repsInt === 8 && weightFloat > maxWeightFor8Reps) {
+                            maxWeightFor8Reps = weightFloat;
+                        }
                     }
                 });
             });
+
+            // Save max weight for 8 reps to localStorage with unique ID
+            localStorage.setItem(`maxWeightFor8Reps_${pageIdentifier}`, maxWeightFor8Reps);
 
             const maxWeightsBody = document.getElementById("maxWeightsBody");
             maxWeightsBody.innerHTML = ''; // Clear existing data
@@ -262,6 +272,8 @@
                 maxWeightsBody.innerHTML += `<tr><td>${reps}</td><td>${weight}</td></tr>`;
             });
         }
+
+
 
         function deleteSelected() {
             const checkboxes = document.querySelectorAll('#savedDataBody .checkbox');
