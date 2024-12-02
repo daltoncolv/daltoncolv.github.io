@@ -227,7 +227,7 @@
 
         function updateMaxWeights() {
             const maxWeights = {};
-            const savedData = JSON.parse(localStorage.getItem('workoutData')) || [];
+            const savedData = JSON.parse(localStorage.getItem(uniqueKey)) || [];
 
             savedData.forEach(entry => {
                 const wrappedHtml = `<table><tbody>${entry.data}</tbody></table>`;
@@ -236,28 +236,37 @@
                 const rows = doc.querySelectorAll('tr');
 
                 rows.forEach(row => {
-                    const cells = row.querySelectorAll('td');
-                    const reps = cells[3].textContent;
-                    const weight = cells[4].textContent;
+                    const repsText = row.cells[3].textContent;  // reps is in the fourth column
+                    const weightText = row.cells[4].textContent; // weight is in the fifth column
 
-                    if (!isNaN(reps) && !isNaN(weight)) {
-                        const repsInt = parseInt(reps);
-                        const weightFloat = parseFloat(weight);
+                    // Log the raw data for debugging
+                    console.log(`Reps Text: ${repsText}, Weight Text: ${weightText}`);
 
-                        if (!maxWeights[repsInt] || weightFloat > maxWeights[repsInt]) {
-                            maxWeights[repsInt] = weightFloat;
+                    // Check if the values are valid numbers
+                    const numReps = parseInt(repsText.split(': ')[1], 10); // Parse the reps value as an integer
+                    const numWeight = parseInt(weightText.split(': ')[1], 10); // Parse the weight value as an integer
+
+                    // Log the parsed numbers
+                    console.log(`Parsed Reps: ${numReps}, Parsed Weight: ${numWeight}`);
+
+                    // Only process valid numbers
+                    if (!isNaN(numReps) && !isNaN(numWeight)) {
+                        if (!maxWeights[numReps] || maxWeights[numReps] < numWeight) {
+                            maxWeights[numReps] = numWeight;
                         }
+                    } else {
+                        console.log(`Skipping invalid data: Reps or Weight is NaN.`);
                     }
                 });
             });
 
-            const maxWeightsBody = document.getElementById("maxWeightsBody");
-            maxWeightsBody.innerHTML = ''; // Clear existing data
-
-            Object.keys(maxWeights).sort((a, b) => a - b).forEach(reps => {
-                const weight = maxWeights[reps];
-                maxWeightsBody.innerHTML += `<tr><td>${reps}</td><td>${weight}</td></tr>`;
-            });
+            // Populate the max weights table
+            const maxWeightsBody = document.getElementById('maxWeightsBody');
+            maxWeightsBody.innerHTML = ''; // Clear the table before adding new data
+            for (const reps in maxWeights) {
+                const row = `<tr><td>${reps}</td><td>${maxWeights[reps]}</td></tr>`;
+                maxWeightsBody.innerHTML += row;
+            }
         }
 
         function deleteSelected() {
