@@ -92,7 +92,7 @@
     </style>
 </head>
 <body>
-    <h1>Dumbbelll Bench</h1>
+    <h1>Dumbbell Bench</h1>
     <table>
         <thead>
             <tr>
@@ -151,6 +151,9 @@
         const scriptURL = 'https://api.github.com/repos/daltoncolv/daltoncolv.github.io/contents/subsites/Chest/Barbell%20Bench/data.txt';
         const token = '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'; // Your GitHub Token
 
+        const pageIdentifier = "Dumbbell Bench";  // Unique identifier for this page
+        const savedDataKey = `workoutData_${pageIdentifier}`;  // Key for localStorage
+
         function submitData() {
             const sets = ['1', '2', '3', '4', '5', '6'];
             let dataToSave = '';
@@ -198,8 +201,8 @@
                             const savedDataBody = document.getElementById("savedDataBody");
                             savedDataBody.innerHTML += displayData;
 
-                            // Save the updated data to local storage
-                            let existingData = localStorage.getItem('workoutData');
+                            // Save the updated data to local storage for the specific page
+                            let existingData = localStorage.getItem(savedDataKey);
                             if (existingData) {
                                 existingData = JSON.parse(existingData);
                             } else {
@@ -207,7 +210,7 @@
                             }
 
                             existingData.push({ date: currentDate, data: displayData });
-                            localStorage.setItem('workoutData', JSON.stringify(existingData));
+                            localStorage.setItem(savedDataKey, JSON.stringify(existingData));
 
                             // Clear the input fields
                             sets.forEach(set => {
@@ -227,7 +230,7 @@
 
         function updateMaxWeights() {
             const maxWeights = {};
-            const savedData = JSON.parse(localStorage.getItem('workoutData')) || [];
+            const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
 
             savedData.forEach(entry => {
                 const wrappedHtml = `<table><tbody>${entry.data}</tbody></table>`;
@@ -272,7 +275,7 @@
             });
 
             const updatedData = Array.from(savedDataBody.querySelectorAll('tr')).map(row => row.outerHTML);
-            localStorage.setItem('workoutData', JSON.stringify([{ data: updatedData.join('') }]));
+            localStorage.setItem(savedDataKey, JSON.stringify([{ data: updatedData.join('') }]));
 
             updateMaxWeights();
         }
@@ -280,7 +283,7 @@
         function deleteAll() {
             const confirmDelete = document.getElementById("confirmDeleteAll").checked;
             if (confirmDelete) {
-                localStorage.removeItem('workoutData');
+                localStorage.removeItem(savedDataKey);
                 const savedDataBody = document.getElementById("savedDataBody");
                 savedDataBody.innerHTML = '';
 
@@ -290,7 +293,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            const savedData = JSON.parse(localStorage.getItem('workoutData')) || [];
+            const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
             const savedDataBody = document.getElementById("savedDataBody");
 
             savedData.forEach(entry => {
@@ -299,6 +302,7 @@
 
             updateMaxWeights();
         });
+
     </script>
 </body>
 </html>
