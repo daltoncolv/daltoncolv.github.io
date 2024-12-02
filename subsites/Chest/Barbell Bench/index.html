@@ -228,57 +228,49 @@
             }
         }
 
+        window.onload = function() {
+            // Load saved data and populate the table
+            const savedData = JSON.parse(localStorage.getItem(uniqueKey)) || [];
+            
+            // Load saved data into the savedDataBody table
+            const savedDataBody = document.getElementById("savedDataBody");
+            savedDataBody.innerHTML = ''; // Clear the table first
+            
+            savedData.forEach(entry => {
+                savedDataBody.innerHTML += entry.data;
+            });
+        
+            // Update the max weights table
+            updateMaxWeights();
+        };
+        
         function updateMaxWeights() {
             const maxWeights = {};
             const savedData = JSON.parse(localStorage.getItem(uniqueKey)) || [];
-        
+            
             savedData.forEach(entry => {
                 const wrappedHtml = `<table><tbody>${entry.data}</tbody></table>`;
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(wrappedHtml, 'text/html');
                 const rows = doc.querySelectorAll('tr');
-        
+            
                 rows.forEach(row => {
                     const repsText = row.cells[3].textContent.trim();  // reps is in the fourth column
                     const weightText = row.cells[4].textContent.trim(); // weight is in the fifth column
-        
-                    console.log(`Reps Text: '${repsText}', Weight Text: '${weightText}'`);
-        
-                    // Check if the text content is not empty and contains valid data
-                    if (!repsText || !weightText) {
-                        console.log('Skipping row: Empty reps or weight data');
-                        return;  // Skip row if reps or weight is missing
-                    }
-        
-                    // Log and test the raw values
-                    console.log(`Raw Reps Text: '${repsText}'`);
-                    console.log(`Raw Weight Text: '${weightText}'`);
-        
-                    // Try to parse the values directly, before split
+            
+                    if (!repsText || !weightText) return;  // Skip row if reps or weight is missing
+            
                     const numReps = parseInt(repsText, 10);
                     const numWeight = parseInt(weightText, 10);
-        
-                    console.log(`Parsed Reps (direct parse): ${numReps}, Parsed Weight (direct parse): ${numWeight}`);
-        
-                    // If direct parsing fails, log more information
-                    if (isNaN(numReps)) {
-                        console.log(`Error: Unable to directly parse reps: '${repsText}'`);
-                    }
-                    if (isNaN(numWeight)) {
-                        console.log(`Error: Unable to directly parse weight: '${weightText}'`);
-                    }
-        
-                    // Only process valid numbers
+            
                     if (!isNaN(numReps) && !isNaN(numWeight)) {
                         if (!maxWeights[numReps] || maxWeights[numReps] < numWeight) {
                             maxWeights[numReps] = numWeight;
                         }
-                    } else {
-                        console.log(`Skipping invalid data: Reps or Weight is NaN.`);
                     }
                 });
             });
-        
+            
             // Populate the max weights table
             const maxWeightsBody = document.getElementById('maxWeightsBody');
             maxWeightsBody.innerHTML = ''; // Clear the table before adding new data
@@ -287,6 +279,7 @@
                 maxWeightsBody.innerHTML += row;
             }
         }
+
 
 
 
