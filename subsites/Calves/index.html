@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chest</title>
+    <title>Calves</title>
     <style>
         body {
             background-color: black;
@@ -19,10 +19,19 @@
             padding-top: 20px; /* Add padding to move it slightly down from the top if needed */
             font-size: 3em; /* Increase font size to 3 times the default */
         }
+        #searchBar {
+            margin: 20px;
+            padding: 10px;
+            font-size: 1.2em;
+            width: 90%; /* Full width but with 5% margin on each side */
+            box-sizing: border-box; /* Ensures padding is included in the width calculation */
+            border-radius: 10px; /* Rounded corners */
+            border: none; /* Remove border */
+        }
         .grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr); /* 2 columns */
-            grid-template-rows: repeat(9, 1fr); /* 9 rows */
+            grid-template-rows: auto; /* Automatically adjust the number of rows */
             gap: 20px; /* Space between grid items */
             width: 90%; /* Full width but with 5% margin on each side */
             margin: 20px auto; /* Center the grid container */
@@ -36,79 +45,67 @@
             justify-content: center; /* Center content horizontally */
             height: 200px; /* Same height as before */
             border-radius: 10px; /* Rounded corners for grid cells */
+            overflow: hidden; /* Ensures content doesn't overflow the grid item */
+            text-align: center; /* Center text within the grid item */
         }
-        .grid-item button {
+        .grid-item a {
             background-color: #FFD700; /* Button background color */
             color: black; /* Button text color */
             border: none; /* Remove border */
-            padding: 30px; /* Padding to make the button fill most of the grid cell */
+            padding: 20px; /* Padding to make the button fill most of the grid cell */
             border-radius: 10px; /* Rounded corners for buttons */
             cursor: pointer; /* Pointer cursor on hover */
-            width: 90%; /* Button takes up most of the width of the cell */
-            height: 90%; /* Button takes up most of the height of the cell */
+            width: 90%; /* Button takes up 90% of the width of the cell */
+            height: 90%; /* Button takes up 90% of the height of the cell */
             font-size: 2em; /* Double the button text size */
+            text-decoration: none; /* Remove underline from links */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box; /* Ensures padding is included in the width calculation */
+            text-align: center; /* Center text within the button */
+            overflow-wrap: break-word; /* Ensure text breaks onto multiple lines if necessary */
         }
-        .grid-item button:hover {
+        .grid-item a:hover {
             background-color: #FFC107; /* Change color on hover */
         }
     </style>
+    <script>
+        function filterGrid() {
+            const searchTerm = document.getElementById('searchBar').value.toLowerCase();
+            const gridItems = document.getElementsByClassName('grid-item');
+            
+            for (let i = 0; i < gridItems.length; i++) {
+                const link = gridItems[i].getElementsByTagName('a')[0];
+                const linkText = link.innerText.toLowerCase();
+                
+                if (linkText.includes(searchTerm)) {
+                    gridItems[i].style.display = 'flex'; // Show item
+                } else {
+                    gridItems[i].style.display = 'none'; // Hide item
+                }
+            }
+        }
+    </script>
 </head>
 <body>
-    <h1>Chest</h1>
+    <h1>Calves</h1>
+    <input type="text" id="searchBar" onkeyup="filterGrid()" placeholder="Search exercises...">
     <div class="grid-container">
         <div class="grid-item">
-            <button>Barbell Bench</button>
+            <a href="https://daltoncolv.github.io/subsites/Calves/Barbell Calf Raises/">Barbell Calf Raises</a>
         </div>
         <div class="grid-item">
-            <button>Dumbbell Bench</button>
+            <a href="https://daltoncolv.github.io/subsites/Calves/Smith Machine Calf Raises/">Smith Machine Calf Raises</a>
         </div>
         <div class="grid-item">
-            <button>Smith Machine Bench</button>
+            <a href="https://daltoncolv.github.io/subsites/Calves/Dumbbell Calf Raises/">Dumbbell Calf Raises</a>
         </div>
         <div class="grid-item">
-            <button>Barbell Incline</button>
+            <a href="https://daltoncolv.github.io/subsites/Calves/Seated Calf Raises/">Seated Calf Raises</a>
         </div>
         <div class="grid-item">
-            <button>Dumbbell Incline</button>
-        </div>
-        <div class="grid-item">
-            <button>Smith Machine Incline</button>
-        </div>
-        <div class="grid-item">
-            <button>Barbell Decline Bench</button>
-        </div>
-        <div class="grid-item">
-            <button>Pec-Deck Flies</button>
-        </div>
-        <div class="grid-item">
-            <button>Incline Cable Flies</button>
-        </div>
-        <div class="grid-item">
-            <button>Flat Cable Flies</button>
-        </div>
-        <div class="grid-item">
-            <button>Decline Cable Flies</button>
-        </div>
-        <div class="grid-item">
-            <button>Incline Dumbbell Flies</button>
-        </div>
-        <div class="grid-item">
-            <button>Flat Dumbbell Flies</button>
-        </div>
-        <div class="grid-item">
-            <button>Seated Incline Cable Flies</button>
-        </div>
-        <div class="grid-item">
-            <button>Seated Flat Cable Flies</button>
-        </div>
-        <div class="grid-item">
-            <button>Incline Chest Machine</button>
-        </div>
-        <div class="grid-item">
-            <button>Flat Chest Machine</button>
-        </div>
-        <div class="grid-item">
-            <button>Decline Chest Machine</button>
+            <a href="https://daltoncolv.github.io/subsites/Calves/Machine Calf Raises/">Machine Calf Raises</a>
         </div>
     </div>
 </body>
