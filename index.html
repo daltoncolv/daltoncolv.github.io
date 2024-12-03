@@ -394,6 +394,7 @@
             const maxWeightFor8Reps_StandingEZBarCurl = localStorage.getItem('maxWeightFor8Reps_Standing EZ Bar Curl');
             const maxWeightFor8Reps_EZBarPreacherCurls = localStorage.getItem('maxWeightFor8Reps_EZ Bar Preacher Curls');
             const maxWeightFor8Reps_SingleArmCableCurl = localStorage.getItem('maxWeightFor8Reps_Single Arm Cable Curl');
+            const maxWeightFor8Reps_Plank = localStorage.getItem('maxWeightFor8Reps_Plank');
 
             // Get all the rows in the table
             const tableRows = document.querySelectorAll('#gridContainer .grid-item table tbody tr');
@@ -434,6 +435,8 @@
                     weightCell.textContent = `${maxWeightFor8Reps_EZBarPreacherCurls} lbs`;
                 } else if (exerciseName === 'Single Arm Cable Curl' && maxWeightFor8Reps_SingleArmCableCurl) {
                     weightCell.textContent = `${maxWeightFor8Reps_SingleArmCableCurl} lbs`;
+                } else if (exerciseName === 'Plank' && maxWeightFor8Reps_Plank) {
+                    weightCell.textContent = `${maxWeightFor8Reps_Plank} lbs`;
                 }
                 // Add similar conditions for other exercises as needed
             });
