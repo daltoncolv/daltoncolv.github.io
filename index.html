@@ -110,15 +110,15 @@
                 <tbody>
                     <tr>
                         <td>Barbell Bench</td>
-                        <td>8 x 10</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
                         <td>Dumbbell Bench</td>
-                        <td>4 x 15</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
                         <td>Dumbbell Incline</td>
-                        <td>3 x 12</td>
+                        <td>0 lb</td>
                     </tr>
                 </tbody>
             </table>
@@ -135,16 +135,16 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Machine Lat Pulldown</td>
-                        <td>4 x 10</td>
+                        <td>Machine Lat Pulldowns</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
                         <td>Wide Machine Rows</td>
-                        <td>4 x 12</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
                         <td>Pull-Ups</td>
-                        <td>3 x 12</td>
+                        <td>0 lb</td>
                     </tr>
                 </tbody>
             </table>
@@ -162,15 +162,15 @@
                 <tbody>
                     <tr>
                         <td>Seated Dumbbell Press</td>
-                        <td>4 x 8</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
                         <td>Dumbbell Lateral Raise</td>
-                        <td>3 x 12</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
                         <td>Cable Rear Delt Flies</td>
-                        <td>3 x 10</td>
+                        <td>0 lb</td>
                     </tr>
                 </tbody>
             </table>
@@ -188,15 +188,15 @@
                 <tbody>
                     <tr>
                         <td>Dips</td>
-                        <td>3 x 10</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
                         <td>Barbell Skull Crushers</td>
-                        <td>4 x 8</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
                         <td>Bar Overhead Extensions</td>
-                        <td>3 x 12</td>
+                        <td>0 lb</td>
                     </tr>
                 </tbody>
             </table>
@@ -214,15 +214,15 @@
                 <tbody>
                     <tr>
                         <td>Standing EZ Bar Curl</td>
-                        <td>4 x 10</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
                         <td>EZ Bar Preacher Curls</td>
-                        <td>3 x 12</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
                         <td>Single Arm Cable Curl</td>
-                        <td>4 x 8</td>
+                        <td>0 lb</td>
                     </tr>
                 </tbody>
             </table>
@@ -240,7 +240,7 @@
                 <tbody>
                     <tr>
                         <td>Squats</td>
-                        <td>4 x 8</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
                         <td>Lunges</td>
@@ -382,7 +382,7 @@
             const maxWeightFor8RepsBarbellBench = localStorage.getItem('maxWeightFor8Reps_Barbell Bench');
             const maxWeightFor8RepsDumbbellBench = localStorage.getItem('maxWeightFor8Reps_Dumbbell Bench'); // Similar for other exercises
             const maxWeightFor8Reps_DumbbellIncline = localStorage.getItem('maxWeightFor8Reps_Dumbbell Incline'); // Add similar lines for other exercises
-            const maxWeightFor8Reps_MachineLatPulldown = localStorage.getItem('maxWeightFor8Reps_Machine Lat Pulldown');
+            const maxWeightFor8Reps_MachineLatPulldown = localStorage.getItem('maxWeightFor8Reps_Machine Lat Pulldowns');
             const maxWeightFor8Reps_WideMachineRows = localStorage.getItem('maxWeightFor8Reps_Wide Machine Rows');
             const maxWeightFor8Reps_PullUps = localStorage.getItem('maxWeightFor8Reps_Pull-Ups'); // Add similar lines for other exercises
             const maxWeightFor8Reps_SeatedDumbbellPress = localStorage.getItem('maxWeightFor8Reps_Seated Dumbbell Press');
@@ -410,8 +410,8 @@
                     weightCell.textContent = `${maxWeightFor8RepsDumbbellBench} lbs`;
                 } else if (exerciseName === 'Dumbbell Incline' && maxWeightFor8Reps_DumbbellIncline) {
                     weightCell.textContent = `${maxWeightFor8Reps_DumbbellIncline} lbs`;
-                } else if (exerciseName === 'Machine Lat Pulldown' && maxWeightFor8Reps_MachineLatPulldown) {
-                    weightCell.textContent = `${maxWeightFor8Reps_MachineLatPulldown} lbs`;
+                } else if (exerciseName === 'Machine Lat Pulldowns' && maxWeightFor8Reps_MachineLatPulldowns) {
+                    weightCell.textContent = `${maxWeightFor8Reps_MachineLatPulldowns} lbs`;
                 } else if (exerciseName === 'Wide Machine Rows' && maxWeightFor8Reps_WideMachineRows) {
                     weightCell.textContent = `${maxWeightFor8Reps_WideMachineRows} lbs`;
                 } else if (exerciseName === 'Pull-Ups' && maxWeightFor8Reps_PullUps) {
