@@ -97,28 +97,26 @@
         <thead>
             <tr>
                 <th></th>
-                <th>Reps</th>
-                <th>Weight</th>
+                <th>Time (s)</th>
             </tr>
         </thead>
         <tbody>
             <!-- Set rows for data input -->
-            <tr><td>Set 1</td><td><input type="text" name="reps" id="reps1" /></td><td><input type="text" name="weight" id="weight1" /></td></tr>
-            <tr><td>Set 2</td><td><input type="text" name="reps" id="reps2" /></td><td><input type="text" name="weight" id="weight2" /></td></tr>
-            <tr><td>Set 3</td><td><input type="text" name="reps" id="reps3" /></td><td><input type="text" name="weight" id="weight3" /></td></tr>
-            <tr><td>Set 4</td><td><input type="text" name="reps" id="reps4" /></td><td><input type="text" name="weight" id="weight4" /></td></tr>
-            <tr><td>Set 5</td><td><input type="text" name="reps" id="reps5" /></td><td><input type="text" name="weight" id="weight5" /></td></tr>
-            <tr><td>Set 6</td><td><input type="text" name="reps" id="reps6" /></td><td><input type="text" name="weight" id="weight6" /></td></tr>
+            <tr><td>Set 1</td><td><input type="text" name="time" id="time1" /></td></tr>
+            <tr><td>Set 2</td><td><input type="text" name="time" id="time2" /></td></tr>
+            <tr><td>Set 3</td><td><input type="text" name="time" id="time3" /></td></tr>
+            <tr><td>Set 4</td><td><input type="text" name="time" id="time4" /></td></tr>
+            <tr><td>Set 5</td><td><input type="text" name="time" id="time5" /></td></tr>
+            <tr><td>Set 6</td><td><input type="text" name="time" id="time6" /></td></tr>
         </tbody>
     </table>
     <button class="submit-btn" onclick="submitData()">Submit</button>
 
-    <!-- New Table for Max Weight per Reps -->
+    <!-- New Table for Max Time -->
     <table id="maxWeights">
         <thead>
             <tr>
-                <th>Reps</th>
-                <th>Max Weight</th>
+                <th>Max Time (s)</th>
             </tr>
         </thead>
         <tbody id="maxWeightsBody"></tbody>
@@ -131,8 +129,7 @@
                 <th>Select</th>
                 <th>Date</th>
                 <th>Set</th>
-                <th>Reps</th>
-                <th>Weight</th>
+                <th>Time (s)</th>
             </tr>
         </thead>
         <tbody id="savedDataBody"></tbody>
@@ -162,13 +159,12 @@
 
             // Collecting the new data
             sets.forEach(set => {
-                const reps = document.getElementById(`reps${set}`).value;
-                const weight = document.getElementById(`weight${set}`).value;
+                const time = document.getElementById(`time${set}`).value;
 
                 // Only add non-empty sets
-                if (reps && weight) {
-                    dataToSave += `Set ${set}: Reps: ${reps}, Weight: ${weight}\n`;
-                    displayData += `<tr><td><input type="checkbox" class="checkbox" /></td><td>${currentDate}</td><td>Set ${set}</td><td>${reps}</td><td>${weight}</td></tr>`;
+                if (time) {
+                    dataToSave += `Set ${set}: Time: ${time}\n`;
+                    displayData += `<tr><td><input type="checkbox" class="checkbox" /></td><td>${currentDate}</td><td>Set ${set}</td><td>${time}</td></tr>`;
                 }
             });
 
@@ -214,11 +210,10 @@
 
                             // Clear the input fields
                             sets.forEach(set => {
-                                document.getElementById(`reps${set}`).value = '';
-                                document.getElementById(`weight${set}`).value = '';
+                                document.getElementById(`time${set}`).value = '';
                             });
 
-                            // Update the max weight table with all the data
+                            // Update the max time table with all the data
                             updateMaxWeights();
                         })
                         .catch(error => {
@@ -230,9 +225,8 @@
 
 
         function updateMaxWeights() {
-            const maxWeights = {};
             const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
-            let maxWeightFor8Reps = 0;
+            let maxTime = 0;
 
             savedData.forEach(entry => {
                 const wrappedHtml = `<table><tbody>${entry.data}</tbody></table>`;
@@ -242,79 +236,112 @@
 
                 rows.forEach(row => {
                     const cells = row.querySelectorAll('td');
-                    const reps = cells[3].textContent;
-                    const weight = cells[4].textContent;
+                    const time = cells[3].textContent;
 
-                    if (!isNaN(reps) && !isNaN(weight)) {
-                        const repsInt = parseInt(reps);
-                        const weightFloat = parseFloat(weight);
-
-                        if (!maxWeights[repsInt] || weightFloat > maxWeights[repsInt]) {
-                            maxWeights[repsInt] = weightFloat;
-                        }
-
-                        // Save max weight for 8 reps
-                        if (repsInt === 8 && weightFloat > maxWeightFor8Reps) {
-                            maxWeightFor8Reps = weightFloat;
+                    if (!isNaN(time)) {
+                        const timeFloat = parseFloat(time);
+                        if (timeFloat > maxTime) {
+                            maxTime = timeFloat;
                         }
                     }
                 });
             });
+            
+            localStorage.setItem(`maxWeightFor8Reps_${pageIdentifier}`, maxTime);
 
-            // Save max weight for 8 reps to localStorage with unique ID
-            localStorage.setItem(`maxWeightFor8Reps_${pageIdentifier}`, maxWeightFor8Reps);
+            // Clear existing max times
+            const maxWeightsBody = document.getElementById('maxWeightsBody');
+            maxWeightsBody.innerHTML = '';
 
-            const maxWeightsBody = document.getElementById("maxWeightsBody");
-            maxWeightsBody.innerHTML = ''; // Clear existing data
-
-            Object.keys(maxWeights).sort((a, b) => a - b).forEach(reps => {
-                const weight = maxWeights[reps];
-                maxWeightsBody.innerHTML += `<tr><td>${reps}</td><td>${weight}</td></tr>`;
-            });
+            // Add the new max time to the table
+            if (maxTime > 0) {
+                const row = `<tr><td>${maxTime}</td></tr>`;
+                maxWeightsBody.insertAdjacentHTML('beforeend', row);
+            }
         }
 
 
-
+        // Function to delete selected rows
         function deleteSelected() {
-            const checkboxes = document.querySelectorAll('#savedDataBody .checkbox');
-            const savedDataBody = document.getElementById("savedDataBody");
+            const checkboxes = document.querySelectorAll('.checkbox');
+            const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
 
             checkboxes.forEach((checkbox, index) => {
                 if (checkbox.checked) {
                     const row = checkbox.closest('tr');
-                    savedDataBody.removeChild(row);
+                    const date = row.cells[1].textContent;
+                    const set = row.cells[2].textContent;
+                    const time = row.cells[3].textContent;
+
+                    // Remove the corresponding data from savedData array
+                    const dataIndex = savedData.findIndex(data => {
+                        const wrappedHtml = `<table><tbody>${data.data}</tbody></table>`;
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(wrappedHtml, 'text/html');
+                        const rows = doc.querySelectorAll('tr');
+
+                        let found = false;
+                        rows.forEach(savedRow => {
+                            const cells = savedRow.querySelectorAll('td');
+                            if (cells[1].textContent === date && cells[2].textContent === set && cells[3].textContent === time) {
+                                found = true;
+                            }
+                        });
+
+                        return found;
+                    });
+
+                    if (dataIndex !== -1) {
+                        savedData.splice(dataIndex, 1); // Remove the data
+                    }
+
+                    row.remove(); // Remove the row from the table
                 }
             });
 
-            const updatedData = Array.from(savedDataBody.querySelectorAll('tr')).map(row => row.outerHTML);
-            localStorage.setItem(savedDataKey, JSON.stringify([{ data: updatedData.join('') }]));
+            // Save the updated data back to localStorage
+            localStorage.setItem(savedDataKey, JSON.stringify(savedData));
 
+            // Update max times
             updateMaxWeights();
         }
 
+        // Function to delete all rows
         function deleteAll() {
-            const confirmDelete = document.getElementById("confirmDeleteAll").checked;
-            if (confirmDelete) {
-                localStorage.removeItem(savedDataKey);
-                const savedDataBody = document.getElementById("savedDataBody");
-                savedDataBody.innerHTML = '';
+            const confirmDelete = document.getElementById('confirmDeleteAll').checked;
 
-                const maxWeightsBody = document.getElementById("maxWeightsBody");
-                maxWeightsBody.innerHTML = '';
+            if (confirmDelete) {
+                // Clear the local storage data for this page
+                localStorage.removeItem(savedDataKey);
+
+                // Clear the display table
+                document.getElementById('savedDataBody').innerHTML = '';
+
+                // Clear the max times table
+                document.getElementById('maxWeightsBody').innerHTML = '';
+            } else {
+                alert("Please confirm deletion by checking the checkbox.");
             }
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
+        // Initialize the page by loading saved data from local storage
+        window.onload = function() {
             const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
-            const savedDataBody = document.getElementById("savedDataBody");
 
             savedData.forEach(entry => {
-                savedDataBody.innerHTML += entry.data;
+                const wrappedHtml = `<table><tbody>${entry.data}</tbody></table>`;
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(wrappedHtml, 'text/html');
+                const rows = doc.querySelectorAll('tr');
+
+                rows.forEach(row => {
+                    document.getElementById('savedDataBody').appendChild(row);
+                });
             });
 
+            // Update max times
             updateMaxWeights();
-        });
-
+        };
     </script>
 </body>
 </html>
