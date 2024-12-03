@@ -239,16 +239,16 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Squats</td>
+                        <td>Barbell Squat</td>
                         <td>0 lb</td>
                     </tr>
                     <tr>
-                        <td>Lunges</td>
-                        <td>3 x 12</td>
+                        <td>Hack Squat</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
-                        <td>Leg Press</td>
-                        <td>4 x 10</td>
+                        <td>Leg Extensions</td>
+                        <td>0 lb</td>
                     </tr>
                 </tbody>
             </table>
@@ -265,16 +265,16 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Deadlifts</td>
-                        <td>4 x 8</td>
+                        <td>Barbell Deadlift</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
-                        <td>Hamstring Curls</td>
-                        <td>3 x 12</td>
+                        <td>Barbell RDL</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
-                        <td>Romanian Deadlifts</td>
-                        <td>3 x 10</td>
+                        <td>Hamstring Curl Machine</td>
+                        <td>0 lb</td>
                     </tr>
                 </tbody>
             </table>
@@ -291,16 +291,16 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Calf Raises</td>
-                        <td>4 x 15</td>
-                    </tr>
-                    <tr>
                         <td>Seated Calf Raises</td>
-                        <td>4 x 12</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
-                        <td>Standing Calf Raises</td>
-                        <td>3 x 15</td>
+                        <td>Smith Machine Calf Raises</td>
+                        <td>0 lb</td>
+                    </tr>
+                    <tr>
+                        <td>Barbell Calf Raises</td>
+                        <td>0 lb</td>
                     </tr>
                 </tbody>
             </table>
@@ -317,16 +317,16 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Crunches</td>
-                        <td>4 x 20</td>
+                        <td>Sit-Ups</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
-                        <td>Leg Raises</td>
-                        <td>4 x 15</td>
+                        <td>Cable Crunches</td>
+                        <td>0 lb</td>
                     </tr>
                     <tr>
                         <td>Plank</td>
-                        <td>3 x 1 min</td>
+                        <td>0 s</td>
                     </tr>
                 </tbody>
             </table>
@@ -394,6 +394,17 @@
             const maxWeightFor8Reps_StandingEZBarCurl = localStorage.getItem('maxWeightFor8Reps_Standing EZ Bar Curl');
             const maxWeightFor8Reps_EZBarPreacherCurls = localStorage.getItem('maxWeightFor8Reps_EZ Bar Preacher Curls');
             const maxWeightFor8Reps_SingleArmCableCurl = localStorage.getItem('maxWeightFor8Reps_Single Arm Cable Curl');
+            const maxWeightFor8Reps_BarbellSquat = localStorage.getItem('maxWeightFor8Reps_Barbell Squat');
+            const maxWeightFor8Reps_HackSquat = localStorage.getItem('maxWeightFor8Reps_Hack Squat'); // Add similar lines for other exercises
+            const maxWeightFor8Reps_LegExtensions = localStorage.getItem('maxWeightFor8Reps_Leg Extensions');
+            const maxWeightFor8Reps_BarbellDeadlift = localStorage.getItem('maxWeightFor8Reps_Barbell Deadlift');
+            const maxWeightFor8Reps_BarbellRDL = localStorage.getItem('maxWeightFor8Reps_Barbell RDL'); // Add similar lines for other exercises
+            const maxWeightFor8Reps_HamstringCurlMachine = localStorage.getItem('maxWeightFor8Reps_Hamstring Curl Machine');
+            const maxWeightFor8Reps_SmithMachineCalfRaises = localStorage.getItem('maxWeightFor8Reps_Smith Machine Calf Raises');
+            const maxWeightFor8Reps_SeatedCalfRaises = localStorage.getItem('maxWeightFor8Reps_Seated Calf Raises'); // Add similar lines for other exercises
+            const maxWeightFor8Reps_BarbellCalfRaises = localStorage.getItem('maxWeightFor8Reps_Barbell Calf Raises');
+            const maxWeightFor8Reps_SitUps = localStorage.getItem('maxWeightFor8Reps_Sit-Ups');
+            const maxWeightFor8Reps_CableCrunches = localStorage.getItem('maxWeightFor8Reps_Cable Crunches');
             const maxWeightFor8Reps_Plank = localStorage.getItem('maxWeightFor8Reps_Plank');
 
             // Get all the rows in the table
@@ -437,6 +448,28 @@
                     weightCell.textContent = `${maxWeightFor8Reps_SingleArmCableCurl} lbs`;
                 } else if (exerciseName === 'Plank' && maxWeightFor8Reps_Plank) {
                     weightCell.textContent = `${maxWeightFor8Reps_Plank} s`;
+                } else if (exerciseName === 'Barbell Squat' && maxWeightFor8Reps_BarbellSquat) {
+                    weightCell.textContent = `${maxWeightFor8Reps_BarbellSquat} lbs`;
+                } else if (exerciseName === 'Hack Squat' && maxWeightFor8Reps_HackSquat) {
+                    weightCell.textContent = `${maxWeightFor8Reps_HackSquat} lbs`;
+                } else if (exerciseName === 'Leg Extensions' && maxWeightFor8Reps_LegExtensions) {
+                    weightCell.textContent = `${maxWeightFor8Reps_LegExtensions} lbs`;
+                } else if (exerciseName === 'Barbell Deadlift' && maxWeightFor8Reps_BarbellDeadlift) {
+                    weightCell.textContent = `${maxWeightFor8Reps_BarbellDeadlift} lbs`;
+                } else if (exerciseName === 'Barbell RDL' && maxWeightFor8Reps_BarbellRDL) {
+                    weightCell.textContent = `${maxWeightFor8Reps_BarbellRDL} lbs`;
+                } else if (exerciseName === 'Hamstring Curl Machine' && maxWeightFor8Reps_HamstringCurlMachine) {
+                    weightCell.textContent = `${maxWeightFor8Reps_HamstringCurlMachine} lbs`;
+                } else if (exerciseName === 'Seated Calf Raises' && maxWeightFor8Reps_SeatedCalfRaises) {
+                    weightCell.textContent = `${maxWeightFor8Reps_SeatedCalfRaises} lbs`;
+                } else if (exerciseName === 'Smith Machine Calf Raises' && maxWeightFor8Reps_SmithMachineCalfRaises) {
+                    weightCell.textContent = `${maxWeightFor8Reps_SmithMachineCalfRaises} lbs`;
+                } else if (exerciseName === 'Barbell Calf Raises' && maxWeightFor8Reps_BarbellCalfRaises) {
+                    weightCell.textContent = `${maxWeightFor8Reps_BarbellCalfRaises} lbs`;
+                } else if (exerciseName === 'Sit-Ups' && maxWeightFor8Reps_SitUps) {
+                    weightCell.textContent = `${maxWeightFor8Reps_SitUps} lbs`;
+                } else if (exerciseName === 'Cable Crunches' && maxWeightFor8Reps_CableCrunches) {
+                    weightCell.textContent = `${maxWeightFor8Reps_CableCrunches} s`;
                 }
                 // Add similar conditions for other exercises as needed
             });
