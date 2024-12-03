@@ -117,7 +117,7 @@
                         <td>4 x 15</td>
                     </tr>
                     <tr>
-                        <td>Chest Fly</td>
+                        <td>Dumbbell Incline</td>
                         <td>3 x 12</td>
                     </tr>
                 </tbody>
@@ -135,15 +135,15 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Pull Ups</td>
+                        <td>Machine Lat Pulldown</td>
                         <td>4 x 10</td>
                     </tr>
                     <tr>
-                        <td>Rows</td>
+                        <td>Wide Machine Rows</td>
                         <td>4 x 12</td>
                     </tr>
                     <tr>
-                        <td>Lat Pulldowns</td>
+                        <td>Pull-Ups</td>
                         <td>3 x 12</td>
                     </tr>
                 </tbody>
@@ -161,15 +161,15 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Overhead Press</td>
+                        <td>Seated Dumbbell Press</td>
                         <td>4 x 8</td>
                     </tr>
                     <tr>
-                        <td>Lateral Raises</td>
+                        <td>Dumbbell Lateral Raise</td>
                         <td>3 x 12</td>
                     </tr>
                     <tr>
-                        <td>Arnold Press</td>
+                        <td>Cable Rear Delt Flies</td>
                         <td>3 x 10</td>
                     </tr>
                 </tbody>
@@ -187,15 +187,15 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Tricep Dips</td>
+                        <td>Dips</td>
                         <td>3 x 10</td>
                     </tr>
                     <tr>
-                        <td>Skull Crushers</td>
+                        <td>Barbell Skull Crushers</td>
                         <td>4 x 8</td>
                     </tr>
                     <tr>
-                        <td>Tricep Pushdowns</td>
+                        <td>Bar Overhead Extensions</td>
                         <td>3 x 12</td>
                     </tr>
                 </tbody>
@@ -213,15 +213,15 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Bicep Curls</td>
+                        <td>Standing EZ Bar Curl</td>
                         <td>4 x 10</td>
                     </tr>
                     <tr>
-                        <td>Hammer Curls</td>
+                        <td>EZ Bar Preacher Curls</td>
                         <td>3 x 12</td>
                     </tr>
                     <tr>
-                        <td>Preacher Curls</td>
+                        <td>Single Arm Cable Curl</td>
                         <td>4 x 8</td>
                     </tr>
                 </tbody>
@@ -379,8 +379,21 @@
         // Function to update the weight in the table from saved max weights
         function updateWeights() {
             // Get the saved max weight for "Barbell Bench" from localStorage
-            const maxWeightFor8Reps = localStorage.getItem('maxWeightFor8Reps_Barbell Bench');
+            const maxWeightFor8RepsBarbellBench = localStorage.getItem('maxWeightFor8Reps_Barbell Bench');
             const maxWeightFor8RepsDumbbellBench = localStorage.getItem('maxWeightFor8Reps_Dumbbell Bench'); // Similar for other exercises
+            const maxWeightFor8Reps_DumbbellIncline = localStorage.getItem('maxWeightFor8Reps_Dumbbell Incline'); // Add similar lines for other exercises
+            const maxWeightFor8Reps_MachineLatPulldown = localStorage.getItem('maxWeightFor8Reps_Machine Lat Pulldown');
+            const maxWeightFor8Reps_WideMachineRows = localStorage.getItem('maxWeightFor8Reps_Wide Machine Rows');
+            const maxWeightFor8Reps_PullUps = localStorage.getItem('maxWeightFor8Reps_Pull-Ups'); // Add similar lines for other exercises
+            const maxWeightFor8Reps_SeatedDumbbellPress = localStorage.getItem('maxWeightFor8Reps_Seated Dumbbell Press');
+            const maxWeightFor8Reps_DumbbellLateralRaise = localStorage.getItem('maxWeightFor8Reps_Dumbbell Lateral Raise');
+            const maxWeightFor8Reps_CableRearDeltFlies = localStorage.getItem('maxWeightFor8Reps_Cable Rear Delt Flies'); // Add similar lines for other exercises
+            const maxWeightFor8Reps_Dips = localStorage.getItem('maxWeightFor8Reps_Dips');
+            const maxWeightFor8Reps_BarbellSkullCrushers = localStorage.getItem('maxWeightFor8Reps_Barbell Skull-Crushers');
+            const maxWeightFor8Reps_BarOverheadExtensions = localStorage.getItem('maxWeightFor8Reps_Bar Overhead Extensions'); // Add similar lines for other exercises
+            const maxWeightFor8Reps_StandingEZBarCurl = localStorage.getItem('maxWeightFor8Reps_Standing EZ Bar Curl');
+            const maxWeightFor8Reps_EZBarPreacherCurls = localStorage.getItem('maxWeightFor8Reps_EZ Bar Preacher Curls');
+            const maxWeightFor8Reps_SingleArmCableCurl = localStorage.getItem('maxWeightFor8Reps_Single Arm Cable Curl');
 
             // Get all the rows in the table
             const tableRows = document.querySelectorAll('#gridContainer .grid-item table tbody tr');
@@ -391,10 +404,36 @@
                 const weightCell = row.cells[1];  // The second cell contains the weight
 
                 // Check for each exercise and update the weight based on the max weight
-                if (exerciseName === 'Barbell Bench' && maxWeightFor8Reps) {
-                    weightCell.textContent = `${maxWeightFor8Reps} lbs`;
+                if (exerciseName === 'Barbell Bench' && maxWeightFor8RepsBarbellBench) {
+                    weightCell.textContent = `${maxWeightFor8RepsBarbellBench} lbs`;
                 } else if (exerciseName === 'Dumbbell Bench' && maxWeightFor8RepsDumbbellBench) {
                     weightCell.textContent = `${maxWeightFor8RepsDumbbellBench} lbs`;
+                } else if (exerciseName === 'Dumbbell Incline' && maxWeightFor8Reps_DumbbellIncline) {
+                    weightCell.textContent = `${maxWeightFor8Reps_DumbbellIncline} lbs`;
+                } else if (exerciseName === 'Machine Lat Pulldown' && maxWeightFor8Reps_MachineLatPulldown) {
+                    weightCell.textContent = `${maxWeightFor8Reps_MachineLatPulldown} lbs`;
+                } else if (exerciseName === 'Wide Machine Rows' && maxWeightFor8Reps_WideMachineRows) {
+                    weightCell.textContent = `${maxWeightFor8Reps_WideMachineRows} lbs`;
+                } else if (exerciseName === 'Pull-Ups' && maxWeightFor8Reps_PullUps) {
+                    weightCell.textContent = `${maxWeightFor8Reps_PullUps} lbs`;
+                } else if (exerciseName === 'Seated Dumbbell Press' && maxWeightFor8Reps_SeatedDumbbellPress) {
+                    weightCell.textContent = `${maxWeightFor8Reps_SeatedDumbbellPress} lbs`;
+                } else if (exerciseName === 'Dumbbell Lateral Raise' && maxWeightFor8Reps_DumbbellLateralRaise) {
+                    weightCell.textContent = `${maxWeightFor8Reps_DumbbellLateralRaise} lbs`;
+                } else if (exerciseName === 'Cable Rear Delt Flies' && maxWeightFor8Reps_CableRearDeltFlies) {
+                    weightCell.textContent = `${maxWeightFor8Reps_CableRearDeltFlies} lbs`;
+                } else if (exerciseName === 'Dips' && maxWeightFor8Reps_Dips) {
+                    weightCell.textContent = `${maxWeightFor8Reps_Dips} lbs`;
+                } else if (exerciseName === 'Barbell Skull-Crushers' && maxWeightFor8Reps_BarbellSkullCrushers) {
+                    weightCell.textContent = `${maxWeightFor8Reps_BarbellSkullCrushers} lbs`;
+                } else if (exerciseName === 'Bar Overhead Extensions' && maxWeightFor8Reps_BarOverheadExtensions) {
+                    weightCell.textContent = `${maxWeightFor8Reps_BarOverheadExtensions} lbs`;
+                } else if (exerciseName === 'Standing EZ Bar Curl' && maxWeightFor8Reps_StandingEZBarCurl) {
+                    weightCell.textContent = `${maxWeightFor8Reps_StandingEZBarCurl} lbs`;
+                } else if (exerciseName === 'EZ Bar Preacher Curl' && maxWeightFor8Reps_EZBarPreacherCurl) {
+                    weightCell.textContent = `${maxWeightFor8Reps_EZBarPreacherCurl} lbs`;
+                } else if (exerciseName === 'Single Arm Cable Curl' && maxWeightFor8Reps_SingleArmCableCurl) {
+                    weightCell.textContent = `${maxWeightFor8Reps_SingleArmCableCurl} lbs`;
                 }
                 // Add similar conditions for other exercises as needed
             });
