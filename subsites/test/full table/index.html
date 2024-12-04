@@ -14,10 +14,6 @@
             flex-direction: column;
             align-items: center;
         }
-        h1 {
-            text-align: center;
-            font-size: 3em;
-        }
         table {
             margin-top: 20px;
             border-collapse: collapse;
@@ -31,11 +27,9 @@
     </style>
 </head>
 <body>
-    <h1>All Workout Data</h1>
     <table id="combinedData">
         <thead>
             <tr>
-                <th>Select</th>
                 <th>Date</th>
                 <th>Page</th>
                 <th>Set</th>
@@ -77,9 +71,8 @@
                         const reps = cells[3].textContent;
                         const weight = cells[4].textContent;
 
-                        // Append each row to the combined table with the page name as well
+                        // Append each row to the combined table without the Select column
                         combinedDataBody.innerHTML += `<tr>
-                            <td><input type="checkbox" class="checkbox" /></td>
                             <td>${currentDate}</td>
                             <td>${pageIdentifier}</td>
                             <td>${set}</td>
