@@ -289,18 +289,25 @@
 
             let maxDistances = new Map();
             let minTimesForOneMile = Number.MAX_VALUE;
+            let maxDistance = 0; // Variable to track the maximum distance
 
             rows.forEach(row => {
                 const cells = row.querySelectorAll('td');
                 const distance = parseFloat(cells[3].innerText);
                 const time = parseFloat(cells[4].innerText);
 
+                // Update the max distance and the corresponding time
                 if (maxDistances.has(distance)) {
                     if (time < maxDistances.get(distance)) {
                         maxDistances.set(distance, time);
                     }
                 } else {
                     maxDistances.set(distance, time);
+                }
+
+                // Track the maximum distance overall
+                if (distance > maxDistance) {
+                    maxDistance = distance;
                 }
 
                 if (distance === 1 && time < minTimesForOneMile) {
@@ -317,9 +324,15 @@
 
             // Save the maximum distance and minimum time for a distance of 1 to local storage
             if (minTimesForOneMile !== Number.MAX_VALUE) {
-                localStorage.setItem('minTimeForOneMile', minTimesForOneMile);
+                localStorage.setItem(`minTimeForOneMile_${pageIdentifier}`, minTimesForOneMile);
+            }
+
+            // Save the maximum distance to local storage with page identifier
+            if (maxDistance > 0) {
+                localStorage.setItem(`maxDistance_${pageIdentifier}`, maxDistance);
             }
         }
+
 
         // Load saved data on page load
         document.addEventListener("DOMContentLoaded", loadSavedData);
