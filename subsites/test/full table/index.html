@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Workout Data</title>
+    <style>
+        body {
+            background-color: black;
+            color: #FFD700;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            text-align: center;
+            font-size: 3em;
+        }
+        table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 80%;
+        }
+        th, td {
+            border: 1px solid #FFD700;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>All Workout Data</h1>
+    <table id="combinedData">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Date</th>
+                <th>Page</th>
+                <th>Set</th>
+                <th>Reps</th>
+                <th>Weight</th>
+            </tr>
+        </thead>
+        <tbody id="combinedDataBody"></tbody>
+    </table>
+
+    <script>
+        const pageIdentifiers = [
+            "Barbell Bench", // Add more page identifiers here
+            "Squat",
+            "Deadlift"
+        ];
+
+        function loadAllData() {
+            const combinedDataBody = document.getElementById("combinedDataBody");
+
+            // Iterate through all pageIdentifiers
+            pageIdentifiers.forEach(pageIdentifier => {
+                const savedDataKey = `workoutData_${pageIdentifier}`;
+                const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
+
+                savedData.forEach(entry => {
+                    const rows = entry.data;
+                    const currentDate = entry.date;
+
+                    // Add each row from the saved data to the table
+                    const wrappedHtml = `<table><tbody>${rows}</tbody></table>`;
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(wrappedHtml, 'text/html');
+                    const rowsInData = doc.querySelectorAll('tr');
+
+                    rowsInData.forEach(row => {
+                        const cells = row.querySelectorAll('td');
+                        const set = cells[2].textContent;
+                        const reps = cells[3].textContent;
+                        const weight = cells[4].textContent;
+
+                        // Append each row to the combined table with the page name as well
+                        combinedDataBody.innerHTML += `<tr>
+                            <td><input type="checkbox" class="checkbox" /></td>
+                            <td>${currentDate}</td>
+                            <td>${pageIdentifier}</td>
+                            <td>${set}</td>
+                            <td>${reps}</td>
+                            <td>${weight}</td>
+                        </tr>`;
+                    });
+                });
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", loadAllData);
+    </script>
+</body>
+</html>
