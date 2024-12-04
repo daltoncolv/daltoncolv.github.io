@@ -17,7 +17,7 @@
         // Fetch and parse the CSV data
         Papa.parse(csvUrl, {
             download: true,
-            header: true,  // If your CSV has headers
+            header: false,  // If your CSV has headers
             complete: function(results) {
                 displayCSV(results.data);
             }
@@ -48,4 +48,3 @@
     </script>
 </body>
 </html>
-
