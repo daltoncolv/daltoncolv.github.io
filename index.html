@@ -338,8 +338,8 @@
                 <thead>
                     <tr>
                         <th>Exercise</th>
-                        <th>Time</th>
-                        <th>Duration</th> <!-- New Column -->
+                        <th>Max Distance</th>
+                        <th>Fastest Mile</th> <!-- New Column -->
                     </tr>
                 </thead>
                 <tbody>
@@ -410,6 +410,12 @@
             const maxWeightFor8Reps_SitUps = localStorage.getItem('maxWeightFor8Reps_Sit-Ups');
             const maxWeightFor8Reps_CableCrunches = localStorage.getItem('maxWeightFor8Reps_Cable Crunches');
             const maxWeightFor8Reps_Plank = localStorage.getItem('maxWeightFor8Reps_Plank');
+            const minTime_Jogging = localStorage.getItem('minTimeForOneMile_Jogging');
+            const maxDistance_Jogging = localStorage.getItem('maxDistance_Jogging');
+            const minTime_StairMaster = localStorage.getItem('maxDistance_Jogging');
+            const maxDistance_StairMaster = localStorage.getItem('maxWeightFor8Reps_Sit-Ups');
+            const mminTime_RowMachine = localStorage.getItem('maxWeightFor8Reps_Cable Crunches');
+            const maxDistance_RowMachine = localStorage.getItem('maxWeightFor8Reps_Plank');
 
             // Get all the rows in the table
             const tableRows = document.querySelectorAll('#gridContainer .grid-item table tbody tr');
@@ -418,6 +424,7 @@
             tableRows.forEach(row => {
                 const exerciseName = row.cells[0].textContent;  // Get the exercise name from the first cell
                 const weightCell = row.cells[1];  // The second cell contains the weight
+                const timeCell = row.cells[2];
 
                 // Check for each exercise and update the weight based on the max weight
                 if (exerciseName === 'Barbell Bench' && maxWeightFor8RepsBarbellBench) {
@@ -474,6 +481,9 @@
                     weightCell.textContent = `${maxWeightFor8Reps_SitUps} lbs`;
                 } else if (exerciseName === 'Cable Crunches' && maxWeightFor8Reps_CableCrunches) {
                     weightCell.textContent = `${maxWeightFor8Reps_CableCrunches} lbs`;
+                } else if (exerciseName === 'Jogging' && maxDistance_Jogging) {
+                    weightCell.textContent = `${maxDistance_Jogging} mi` 
+                    timeCell.textContent = '${minTime_Jogging} min';
                 }
                 // Add similar conditions for other exercises as needed
             });
