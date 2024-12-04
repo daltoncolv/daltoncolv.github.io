@@ -139,7 +139,7 @@
                         <td>0 lb</td>
                     </tr>
                     <tr>
-                        <td>Wide Machine Rows</td>
+                        <td>Narrow Machine Rows</td>
                         <td>0 lb</td>
                     </tr>
                     <tr>
@@ -387,7 +387,7 @@
             const maxWeightFor8RepsDumbbellBench = localStorage.getItem('maxWeightFor8Reps_Dumbbell Bench'); // Similar for other exercises
             const maxWeightFor8Reps_DumbbellIncline = localStorage.getItem('maxWeightFor8Reps_Dumbbell Incline'); // Add similar lines for other exercises
             const maxWeightFor8Reps_MachineLatPulldowns = localStorage.getItem('maxWeightFor8Reps_Machine Lat Pulldowns');
-            const maxWeightFor8Reps_WideMachineRows = localStorage.getItem('maxWeightFor8Reps_Wide Machine Rows');
+            const maxWeightFor8Reps_WideMachineRows = localStorage.getItem('maxWeightFor8Reps_Narrow Machine Rows');
             const maxWeightFor8Reps_PullUps = localStorage.getItem('maxWeightFor8Reps_Pull-Ups'); // Add similar lines for other exercises
             const maxWeightFor8Reps_SeatedDumbbellPress = localStorage.getItem('maxWeightFor8Reps_Seated Dumbbell Press');
             const maxWeightFor8Reps_DumbbellLateralRaise = localStorage.getItem('maxWeightFor8Reps_Dumbbell Lateral Raise');
@@ -435,7 +435,7 @@
                     weightCell.textContent = `${maxWeightFor8Reps_DumbbellIncline} lbs`;
                 } else if (exerciseName === 'Machine Lat Pulldowns' && maxWeightFor8Reps_MachineLatPulldowns) {
                     weightCell.textContent = `${maxWeightFor8Reps_MachineLatPulldowns} lbs`;
-                } else if (exerciseName === 'Wide Machine Rows' && maxWeightFor8Reps_WideMachineRows) {
+                } else if (exerciseName === 'Narrow Machine Rows' && maxWeightFor8Reps_WideMachineRows) {
                     weightCell.textContent = `${maxWeightFor8Reps_WideMachineRows} lbs`;
                 } else if (exerciseName === 'Pull-Ups' && maxWeightFor8Reps_PullUps) {
                     weightCell.textContent = `${maxWeightFor8Reps_PullUps} lbs`;
@@ -497,8 +497,8 @@
 
         // Call the update function on page load
         document.addEventListener("DOMContentLoaded", updateWeights);
-        console.log(localStorage.getItem('fastestPace_Jogging'));
-        console.log(localStorage.getItem('maxDistance_Jogging'));
+        console.log(localStorage.getItem('fastestPace_Row Machine'));
+        console.log(localStorage.getItem('maxDistance_Row Machine'));
 
     </script>
 </body>
