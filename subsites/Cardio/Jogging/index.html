@@ -97,8 +97,8 @@
         <thead>
             <tr>
                 <th></th>
-                <th>Distance (mi)</th>
-                <th>Time (min)</th>
+                <th>Distance</th>
+                <th>Time</th>
             </tr>
         </thead>
         <tbody>
@@ -117,8 +117,8 @@
     <table id="maxWeights">
         <thead>
             <tr>
-                <th>Distance (mi)</th>
-                <th>Time (min)</th>
+                <th>Distance</th>
+                <th>Time</th>
             </tr>
         </thead>
         <tbody id="maxWeightsBody"></tbody>
@@ -131,8 +131,8 @@
                 <th>Select</th>
                 <th>Date</th>
                 <th>Set</th>
-                <th>Distance (mi)</th>
-                <th>Time (min)</th>
+                <th>Distance</th>
+                <th>Time</th>
             </tr>
         </thead>
         <tbody id="savedDataBody"></tbody>
@@ -288,13 +288,24 @@
             const rows = savedDataBody.querySelectorAll('tr');
 
             let maxDistances = new Map();
-            let minTimesForOneMile = Number.MAX_VALUE;
-            let maxDistance = 0; // Variable to track the maximum distance
+            let minPace = Number.MAX_VALUE;  // Variable to track the fastest pace (lowest minutes per mile)
+            let fastestPaceSet = '';  // Variable to store the set associated with the fastest pace
 
             rows.forEach(row => {
                 const cells = row.querySelectorAll('td');
                 const distance = parseFloat(cells[3].innerText);
                 const time = parseFloat(cells[4].innerText);
+
+                // Skip rows with invalid data (e.g., empty cells)
+                if (isNaN(distance) || isNaN(time) || distance === 0) return;
+
+                const pace = time / distance;  // Calculate the pace (minutes per mile)
+
+                // Track the fastest pace (lowest minutes per mile)
+                if (pace < minPace) {
+                    minPace = pace;
+                    fastestPaceSet = cells[2].innerText;  // Set identifier (e.g., "Set 1", "Set 2", etc.)
+                }
 
                 // Update the max distance and the corresponding time
                 if (maxDistances.has(distance)) {
@@ -304,17 +315,9 @@
                 } else {
                     maxDistances.set(distance, time);
                 }
-
-                // Track the maximum distance overall
-                if (distance > maxDistance) {
-                    maxDistance = distance;
-                }
-
-                if (distance === 1 && time < minTimesForOneMile) {
-                    minTimesForOneMile = time;
-                }
             });
 
+            // Display the data in the maxWeights table
             const maxWeightsBody = document.getElementById("maxWeightsBody");
             maxWeightsBody.innerHTML = ''; // Clear existing rows
 
@@ -322,14 +325,10 @@
                 maxWeightsBody.insertAdjacentHTML('beforeend', `<tr><td>${distance}</td><td>${time}</td></tr>`);
             });
 
-            // Save the maximum distance and minimum time for a distance of 1 to local storage
-            if (minTimesForOneMile !== Number.MAX_VALUE) {
-                localStorage.setItem(`minTimeForOneMile_${pageIdentifier}`, minTimesForOneMile);
-            }
-
-            // Save the maximum distance to local storage with page identifier
-            if (maxDistance > 0) {
-                localStorage.setItem(`maxDistance_${pageIdentifier}`, maxDistance);
+            // Save the fastest pace to localStorage
+            if (minPace !== Number.MAX_VALUE) {
+                localStorage.setItem(`fastestPace_${pageIdentifier}`, minPace);
+                localStorage.setItem(`fastestPaceSet_${pageIdentifier}`, fastestPaceSet);  // Store the set associated with the fastest pace
             }
         }
 
