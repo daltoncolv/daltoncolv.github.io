@@ -1,1 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Data Display</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+    <h1>CSV Data</h1>
+    <div id="csv-content"></div>
+
+    <script>
+        // URL to your CSV file
+        const csvUrl = 'https://raw.githubusercontent.com/yourusername/yourrepo/main/yourfile.csv';
+
+        // Fetch and parse the CSV data
+        Papa.parse(csvUrl, {
+            download: true,
+            header: true,  // If your CSV has headers
+            complete: function(results) {
+                displayCSV(results.data);
+            }
+        });
+
+        // Function to display CSV data as an HTML table
+        function displayCSV(data) {
+            let table = '<table border="1"><tr>';
+            
+            // Add table headers
+            for (let key in data[0]) {
+                table += `<th>${key}</th>`;
+            }
+            table += '</tr>';
+
+            // Add table rows
+            data.forEach(row => {
+                table += '<tr>';
+                for (let key in row) {
+                    table += `<td>${row[key]}</td>`;
+                }
+                table += '</tr>';
+            });
+
+            table += '</table>';
+            document.getElementById('csv-content').innerHTML = table;
+        }
+    </script>
+</body>
+</html>
 
