@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bike</title>
+    <style>
+        body {
+            background-color: black;
+            color: #FFD700; /* Soft golden color */
+            margin: 0;
+            padding: 0; /* Remove padding */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content */
+        }
+        h1 {
+            text-align: center;
+            font-size: 3em;
+        }
+        table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 80%;
+        }
+        th, td {
+            border: 1px solid #FFD700;
+            padding: 10px;
+            text-align: center;
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #FFD700;
+            background-color: #333;
+            color: #FFD700;
+        }
+        .submit-btn, .delete-btn {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            color: black;
+            background-color: #FFD700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .submit-btn:hover, .delete-btn:hover {
+            background-color: #FFC107;
+        }
+        #savedData, #maxWeights {
+            margin-top: 20px;
+            width: 80%;
+            border-collapse: collapse;
+            color: #FFD700;
+        }
+        #savedData th, #savedData td, #maxWeights th, #maxWeights td {
+            border: 1px solid #FFD700;
+            padding: 10px;
+            text-align: center;
+        }
+        .checkbox {
+            width: 30px;
+            height: 30px;
+        }
+        .delete-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .delete-section label {
+            margin-right: 10px;
+        }
+        /* New styling for Delete All section */
+        .delete-all-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .delete-all-section input[type="checkbox"] {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .delete-all-section button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bike</h1>
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Distance (mi)</th>
+                <th>Time (min)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Set rows for data input -->
+            <tr><td>Set 1</td><td><input type="text" name="distance" id="distance1" /></td><td><input type="text" name="time" id="time1" /></td></tr>
+            <tr><td>Set 2</td><td><input type="text" name="distance" id="distance2" /></td><td><input type="text" name="time" id="time2" /></td></tr>
+            <tr><td>Set 3</td><td><input type="text" name="distance" id="distance3" /></td><td><input type="text" name="time" id="time3" /></td></tr>
+            <tr><td>Set 4</td><td><input type="text" name="distance" id="distance4" /></td><td><input type="text" name="time" id="time4" /></td></tr>
+            <tr><td>Set 5</td><td><input type="text" name="distance" id="distance5" /></td><td><input type="text" name="time" id="time5" /></td></tr>
+            <tr><td>Set 6</td><td><input type="text" name="distance" id="distance6" /></td><td><input type="text" name="time" id="time6" /></td></tr>
+        </tbody>
+    </table>
+    <button class="submit-btn" onclick="submitData()">Submit</button>
+
+    <!-- New Table for Max Weight per Reps -->
+    <table id="maxWeights">
+        <thead>
+            <tr>
+                <th>Distance (mi)</th>
+                <th>Time (min)</th>
+            </tr>
+        </thead>
+        <tbody id="maxWeightsBody"></tbody>
+    </table>
+
+    <!-- Display the saved data -->
+    <table id="savedData">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Date</th>
+                <th>Set</th>
+                <th>Distance (mi)</th>
+                <th>Time (min)</th>
+            </tr>
+        </thead>
+        <tbody id="savedDataBody"></tbody>
+    </table>
+
+    <button class="delete-btn" onclick="deleteSelected()">Delete Selected</button>
+
+    <!-- Delete All Section -->
+    <div class="delete-all-section">
+        <button class="delete-btn" onclick="deleteAll()" id="deleteAllBtn">Delete All</button>
+        <input type="checkbox" id="confirmDeleteAll" />
+        <label for="confirmDeleteAll" style="color: #FFD700;">Confirm Deletion</label>
+    </div>
+
+    <script>
+        const scriptURL = 'https://api.github.com/repos/daltoncolv/daltoncolv.github.io/contents/subsites/Chest/Barbell%20Bench/data.txt';
+        const token = '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'; // Your GitHub Token
+
+        const pageIdentifier = "Bike";  // Unique identifier for this page
+        const savedDataKey = `workoutData_${pageIdentifier}`;  // Key for localStorage
+
+        function submitData() {
+            const sets = ['1', '2', '3', '4', '5', '6'];
+            let dataToSave = '';
+            let displayData = '';
+            const currentDate = new Date().toLocaleDateString(); // Get the current date
+
+            // Collecting the new data
+            sets.forEach(set => {
+                const distance = document.getElementById(`distance${set}`).value;
+                const time = document.getElementById(`time${set}`).value;
+
+                // Only add non-empty sets
+                if (distance && time) {
+                    dataToSave += `Set ${set}: Distance: ${distance}, Time: ${time}\n`;
+                    displayData += `<tr><td><input type="checkbox" class="checkbox" /></td><td>${currentDate}</td><td>Set ${set}</td><td>${distance}</td><td>${time}</td></tr>`;
+                }
+            });
+
+            // Save the data to GitHub and local storage
+            if (dataToSave) {
+                fetch(scriptURL)
+                    .then(response => response.json())
+                    .then(data => {
+                        const sha = data.sha; // Get the file SHA
+
+                        const dataPayload = {
+                            message: "Save workout data",
+                            content: btoa(dataToSave),  // Base64 encode the content
+                            sha: sha,                   // Include the SHA
+                            branch: "main"
+                        };
+
+                        fetch(scriptURL, {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `token ${token}`,
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(dataPayload),
+                        })
+                        .then(response => response.json())
+                        .then(() => {
+                            console.log('Success: Data saved');
+                            // Insert the new data at the top of the display table
+                            const savedDataBody = document.getElementById("savedDataBody");
+                            savedDataBody.insertAdjacentHTML('afterbegin', displayData); // Insert at the top
+
+                            // Save the updated data to local storage for the specific page
+                            let existingData = localStorage.getItem(savedDataKey);
+                            if (existingData) {
+                                existingData = JSON.parse(existingData);
+                            } else {
+                                existingData = [];
+                            }
+
+                            existingData.unshift({ date: currentDate, data: displayData }); // Add at the start of the array
+                            localStorage.setItem(savedDataKey, JSON.stringify(existingData));
+
+                            // Clear the input fields
+                            sets.forEach(set => {
+                                document.getElementById(`distance${set}`).value = '';
+                                document.getElementById(`time${set}`).value = '';
+                            });
+
+                            updateMaxWeights();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+        }
+
+        function loadSavedData() {
+            const savedDataBody = document.getElementById("savedDataBody");
+            let savedData = localStorage.getItem(savedDataKey);
+
+            if (savedData) {
+                savedData = JSON.parse(savedData);
+                savedData.forEach(item => {
+                    savedDataBody.insertAdjacentHTML('beforeend', item.data);
+                });
+            }
+
+            updateMaxWeights(); // Update the max weights table
+        }
+
+        function deleteSelected() {
+            const savedDataBody = document.getElementById("savedDataBody");
+            const checkboxes = savedDataBody.querySelectorAll('input[type="checkbox"]:checked');
+
+            checkboxes.forEach(checkbox => {
+                const row = checkbox.closest('tr');
+                savedDataBody.removeChild(row);
+            });
+
+            updateLocalStorage();
+            updateMaxWeights();
+        }
+
+        function deleteAll() {
+            const confirmDeleteAll = document.getElementById("confirmDeleteAll").checked;
+
+            if (confirmDeleteAll) {
+                const savedDataBody = document.getElementById("savedDataBody");
+                savedDataBody.innerHTML = '';  // Clear all rows
+
+                localStorage.removeItem(savedDataKey);  // Remove all data for the specific page
+
+                document.getElementById("confirmDeleteAll").checked = false; // Reset the checkbox
+            }
+            	updateMaxWeights();
+        }
+
+        function updateLocalStorage() {
+            const savedDataBody = document.getElementById("savedDataBody");
+            const rows = savedDataBody.querySelectorAll('tr');
+
+            let updatedData = [];
+            rows.forEach(row => {
+                updatedData.push({ data: row.outerHTML });
+            });
+
+            localStorage.setItem(savedDataKey, JSON.stringify(updatedData));
+        }
+
+        function updateMaxWeights() {
+            const savedDataBody = document.getElementById("savedDataBody");
+            const rows = savedDataBody.querySelectorAll('tr');
+
+            let maxDistances = new Map();
+            let minTimesForOneMile = Number.MAX_VALUE;
+            let maxDistance = 0; // Variable to track the maximum distance
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const distance = parseFloat(cells[3].innerText);
+                const time = parseFloat(cells[4].innerText);
+
+                // Update the max distance and the corresponding time
+                if (maxDistances.has(distance)) {
+                    if (time < maxDistances.get(distance)) {
+                        maxDistances.set(distance, time);
+                    }
+                } else {
+                    maxDistances.set(distance, time);
+                }
+
+                // Track the maximum distance overall
+                if (distance > maxDistance) {
+                    maxDistance = distance;
+                }
+
+                if (distance === 1 && time < minTimesForOneMile) {
+                    minTimesForOneMile = time;
+                }
+            });
+
+            const maxWeightsBody = document.getElementById("maxWeightsBody");
+            maxWeightsBody.innerHTML = ''; // Clear existing rows
+
+            maxDistances.forEach((time, distance) => {
+                maxWeightsBody.insertAdjacentHTML('beforeend', `<tr><td>${distance}</td><td>${time}</td></tr>`);
+            });
+
+            // Save the maximum distance and minimum time for a distance of 1 to local storage
+            if (minTimesForOneMile !== Number.MAX_VALUE) {
+                localStorage.setItem(`minTimeForOneMile_${pageIdentifier}`, minTimesForOneMile);
+            }
+
+            // Save the maximum distance to local storage with page identifier
+            if (maxDistance > 0) {
+                localStorage.setItem(`maxDistance_${pageIdentifier}`, maxDistance);
+            }
+        }
+
+
+        // Load saved data on page load
+        document.addEventListener("DOMContentLoaded", loadSavedData);
+    </script>
+</body>
+</html>
