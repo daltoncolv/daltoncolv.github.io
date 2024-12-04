@@ -412,10 +412,10 @@
             const maxWeightFor8Reps_Plank = localStorage.getItem('maxWeightFor8Reps_Plank');
             const minTime_Jogging = localStorage.getItem(`fastestPace_Jogging`);
             const maxDistance_Jogging = localStorage.getItem('maxDistance_Jogging');
-            const minTime_StairMaster = localStorage.getItem('maxDistance_Jogging');
-            const maxDistance_StairMaster = localStorage.getItem('maxWeightFor8Reps_Sit-Ups');
-            const mminTime_RowMachine = localStorage.getItem('maxWeightFor8Reps_Cable Crunches');
-            const maxDistance_RowMachine = localStorage.getItem('maxWeightFor8Reps_Plank');
+            const minTime_StairMaster = localStorage.getItem('fastestPace_Stair Master');
+            const maxDistance_StairMaster = localStorage.getItem('maxDistance_Stair Master');
+            const minTime_RowMachine = localStorage.getItem('fastestPace_Row Machine');
+            const maxDistance_RowMachine = localStorage.getItem('maxDistance_Row Machine');
 
             // Get all the rows in the table
             const tableRows = document.querySelectorAll('#gridContainer .grid-item table tbody tr');
@@ -484,6 +484,12 @@
                 } else if (exerciseName === 'Jogging' && maxDistance_Jogging) {
                     weightCell.textContent = `${maxDistance_Jogging} mi` 
                     timeCell.textContent = `${minTime_Jogging} min/mi`;
+                } else if (exerciseName === 'Stair Master' && maxDistance_StairMaster) {
+                    weightCell.textContent = `${maxDistance_StairMaster } Floors` 
+                    timeCell.textContent = `${minTime_StairMaster} min/Floor`;
+                } else if (exerciseName === 'RowMachine' && maxDistance_RowMachine) {
+                    weightCell.textContent = `${maxDistance_RowMachine} km` 
+                    timeCell.textContent = `${minTime_RowMachine} min/km`;
                 }
                 // Add similar conditions for other exercises as needed
             });
