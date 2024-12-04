@@ -286,27 +286,30 @@
         function updateMaxWeights() {
             const savedDataBody = document.getElementById("savedDataBody");
             const rows = savedDataBody.querySelectorAll('tr');
-
+        
             let maxDistances = new Map();
             let minPace = Number.MAX_VALUE;  // Variable to track the fastest pace (lowest minutes per mile)
             let fastestPaceSet = '';  // Variable to store the set associated with the fastest pace
-
+        
+            let maxDistance = 0;
+            let maxDistanceTime = 0;
+        
             rows.forEach(row => {
                 const cells = row.querySelectorAll('td');
                 const distance = parseFloat(cells[3].innerText);
                 const time = parseFloat(cells[4].innerText);
-
+        
                 // Skip rows with invalid data (e.g., empty cells)
                 if (isNaN(distance) || isNaN(time) || distance === 0) return;
-
+        
                 const pace = time / distance;  // Calculate the pace (minutes per mile)
-
+        
                 // Track the fastest pace (lowest minutes per mile)
                 if (pace < minPace) {
                     minPace = pace;
                     fastestPaceSet = cells[2].innerText;  // Set identifier (e.g., "Set 1", "Set 2", etc.)
                 }
-
+        
                 // Update the max distance and the corresponding time
                 if (maxDistances.has(distance)) {
                     if (time < maxDistances.get(distance)) {
@@ -315,20 +318,32 @@
                 } else {
                     maxDistances.set(distance, time);
                 }
+        
+                // Check for the maximum distance
+                if (distance > maxDistance) {
+                    maxDistance = distance;
+                    maxDistanceTime = time;
+                }
             });
-
+        
             // Display the data in the maxWeights table
             const maxWeightsBody = document.getElementById("maxWeightsBody");
             maxWeightsBody.innerHTML = ''; // Clear existing rows
-
+        
             maxDistances.forEach((time, distance) => {
                 maxWeightsBody.insertAdjacentHTML('beforeend', `<tr><td>${distance}</td><td>${time}</td></tr>`);
             });
-
+        
             // Save the fastest pace to localStorage
             if (minPace !== Number.MAX_VALUE) {
                 localStorage.setItem(`fastestPace_${pageIdentifier}`, minPace);
                 localStorage.setItem(`fastestPaceSet_${pageIdentifier}`, fastestPaceSet);  // Store the set associated with the fastest pace
+            }
+        
+            // Save the maximum distance and its corresponding time to localStorage
+            if (maxDistance > 0) {
+                localStorage.setItem(`maxDistance_${pageIdentifier}`, maxDistance);
+                localStorage.setItem(`maxDistanceTime_${pageIdentifier}`, maxDistanceTime);
             }
         }
 
