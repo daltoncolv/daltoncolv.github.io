@@ -146,6 +146,10 @@
                 
                 // Save the data to localStorage
                 localStorage.setItem(pageIdentifier, JSON.stringify(data));
+
+                // Troubleshooting: Log the key and the data stored in localStorage
+                const savedData = localStorage.getItem(pageIdentifier);
+                console.log(`Saved as "${pageIdentifier}": ${savedData}`);
             });
 
             alert("Data saved successfully!");
