@@ -3,229 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barbell Incline</title>
+    <title>All Workout Data</title>
     <style>
-        /* Your existing styles here */
+        body {
+            background-color: black;
+            color: #FFD700;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 80%;
+        }
+        th, td {
+            border: 1px solid #FFD700;
+            padding: 10px;
+            text-align: center;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .controls button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #FFD700;
+            border: none;
+            cursor: pointer;
+            color: black;
+            font-weight: bold;
+        }
+        .controls button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+        .controls input[type="checkbox"] {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
-    <h1>Barbell Incline</h1>
-    <!-- Data Input Table -->
-    <table>
+    <table id="combinedData">
         <thead>
             <tr>
-                <th></th>
-                <th>Reps</th>
-                <th>Weight</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td>Set 1</td><td><input type="text" name="reps" id="reps1" /></td><td><input type="text" name="weight" id="weight1" /></td></tr>
-            <tr><td>Set 2</td><td><input type="text" name="reps" id="reps2" /></td><td><input type="text" name="weight" id="weight2" /></td></tr>
-            <tr><td>Set 3</td><td><input type="text" name="reps" id="reps3" /></td><td><input type="text" name="weight" id="weight3" /></td></tr>
-            <tr><td>Set 4</td><td><input type="text" name="reps" id="reps4" /></td><td><input type="text" name="weight" id="weight4" /></td></tr>
-            <tr><td>Set 5</td><td><input type="text" name="reps" id="reps5" /></td><td><input type="text" name="weight" id="weight5" /></td></tr>
-            <tr><td>Set 6</td><td><input type="text" name="reps" id="reps6" /></td><td><input type="text" name="weight" id="weight6" /></td></tr>
-        </tbody>
-    </table>
-    <button class="submit-btn" onclick="submitData()">Submit</button>
-
-    <!-- Max Weights Table -->
-    <table id="maxWeights">
-        <thead>
-            <tr>
-                <th>Reps</th>
-                <th>Max Weight</th>
-            </tr>
-        </thead>
-        <tbody id="maxWeightsBody"></tbody>
-    </table>
-
-    <!-- Saved Data Table -->
-    <table id="savedData">
-        <thead>
-            <tr>
-                <th>Select</th>
                 <th>Date</th>
+                <th>Page</th>
                 <th>Set</th>
                 <th>Reps</th>
                 <th>Weight</th>
             </tr>
         </thead>
-        <tbody id="savedDataBody"></tbody>
+        <tbody id="combinedDataBody"></tbody>
     </table>
-
-    <button class="delete-btn" onclick="deleteSelected()">Delete Selected</button>
-
-    <!-- Delete All Section -->
-    <div class="delete-all-section">
-        <button class="delete-btn" onclick="deleteAll()" id="deleteAllBtn">Delete All</button>
-        <input type="checkbox" id="confirmDeleteAll" />
-        <label for="confirmDeleteAll" style="color: #FFD700;">Confirm Deletion</label>
+    
+    <div class="controls">
+        <input type="checkbox" id="confirmCheckbox">
+        <label for="confirmCheckbox">Confirm</label>
+        <button id="saveButton" disabled>Save Data</button>
     </div>
 
     <script>
-        const scriptURL = 'https://api.github.com/repos/daltoncolv/daltoncolv.github.io/contents/subsites/Chest/Barbell%20Bench/data.txt';
-        const token = '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'; // Your GitHub Token
-
-        const pageIdentifier = "Barbell Incline";  // Unique identifier for this page
-        const savedDataKey = `workoutData_${pageIdentifier}`;  // Key for localStorage
-
-        function submitData() {
-            const sets = ['1', '2', '3', '4', '5', '6'];
-            let dataToSave = '';
-            let displayData = '';
-            const currentDate = new Date().toLocaleDateString(); // Get the current date
-        
-            console.log("Starting data collection...");
-        
-            sets.forEach(set => {
-                const reps = document.getElementById(`reps${set}`).value;
-                const weight = document.getElementById(`weight${set}`).value;
-        
-                // Only add non-empty sets
-                if (reps && weight) {
-                    dataToSave += `Set ${set}: Reps: ${reps}, Weight: ${weight}\n`;
-                    displayData += `<tr><td><input type="checkbox" class="checkbox" /></td><td>${currentDate}</td><td>Set ${set}</td><td>${reps}</td><td>${weight}</td></tr>`;
-                }
-            });
-        
-            console.log("Collected data:", dataToSave);
-            console.log("Display data:", displayData);
-        
-            // Save the data to GitHub and local storage
-            if (dataToSave) {
-                console.log("Sending data to GitHub...");
-                fetch(scriptURL)
-                    .then(response => response.json())
-                    .then(data => {
-                        const sha = data.sha; // Get the file SHA
-        
-                        const dataPayload = {
-                            message: "Save workout data",
-                            content: btoa(dataToSave),  // Base64 encode the content
-                            sha: sha,                   // Include the SHA
-                            branch: "main"
-                        };
-        
-                        fetch(scriptURL, {
-                            method: 'PUT',
-                            headers: {
-                                'Authorization': `token ${token}`,
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(dataPayload),
-                        })
-                        .then(response => response.json())
-                        .then(() => {
-                            console.log('Data saved successfully to GitHub');
-                            // Insert the new data at the top of the display table
-                            const savedDataBody = document.getElementById("savedDataBody");
-                            savedDataBody.insertAdjacentHTML('afterbegin', displayData);
-        
-                            // Save the updated data to local storage
-                            let existingData = localStorage.getItem(savedDataKey);
-                            if (existingData) {
-                                existingData = JSON.parse(existingData);
-                            } else {
-                                existingData = [];
-                            }
-        
-                            // Add new data to the saved data list
-                            existingData.unshift({ date: currentDate, data: displayData });
-                            localStorage.setItem(savedDataKey, JSON.stringify(existingData));
-        
-                            // Clear the input fields
-                            sets.forEach(set => {
-                                document.getElementById(`reps${set}`).value = '';
-                                document.getElementById(`weight${set}`).value = '';
-                            });
-        
-                            updateMaxWeights();
-                        })
-                        .catch(error => {
-                            console.error('Error saving data:', error);
-                        });
-                    });
-            }
+        async function fetchCSVData(url) {
+            const response = await fetch(url);
+            const data = await response.text();
+            return data;
         }
 
-        function updateMaxWeights() {
-            const maxWeights = {};
-            const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
-            let maxWeightFor8Reps = 0;
-
-            savedData.forEach(entry => {
-                const wrappedHtml = `<table><tbody>${entry.data}</tbody></table>`;
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(wrappedHtml, 'text/html');
-                const rows = doc.querySelectorAll('tr');
-
-                rows.forEach(row => {
-                    const cells = row.querySelectorAll('td');
-                    const reps = cells[3].textContent;
-                    const weight = cells[4].textContent;
-
-                    if (!isNaN(reps) && !isNaN(weight)) {
-                        const repsInt = parseInt(reps);
-                        const weightFloat = parseFloat(weight);
-
-                        if (!maxWeights[repsInt] || weightFloat > maxWeights[repsInt]) {
-                            maxWeights[repsInt] = weightFloat;
-                        }
-
-                        // Save max weight for 8 reps
-                        if (repsInt === 8 && weightFloat > maxWeightFor8Reps) {
-                            maxWeightFor8Reps = weightFloat;
-                        }
-                    }
-                });
-            });
-
-            // Save max weight for 8 reps to localStorage with unique ID
-            localStorage.setItem(`maxWeightFor8Reps_${pageIdentifier}`, maxWeightFor8Reps);
-
-            const maxWeightsBody = document.getElementById("maxWeightsBody");
-            maxWeightsBody.innerHTML = ''; // Clear existing data
-
-            Object.keys(maxWeights).sort((a, b) => a - b).forEach(reps => {
-                const weight = maxWeights[reps];
-                maxWeightsBody.innerHTML += `<tr><td>${reps}</td><td>${weight}</td></tr>`;
-            });
+        function parseCSV(data) {
+            const rows = data.split('\n').map(row => row.split(','));
+            return rows;
         }
 
-        function deleteSelected() {
-            const checkboxes = document.querySelectorAll('.checkbox');
-            checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    const row = checkbox.closest('tr');
-                    row.remove();
+        function excelDateToJSDate(excelDate) {
+            const baseDate = new Date(1900, 0, 1);
+            baseDate.setDate(baseDate.getDate() + (excelDate - 1));
+            return baseDate;
+        }
+
+        function formatDateString(date) {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${month}/${day}/${year}`;
+        }
+
+        function loadAllData() {
+            const combinedDataBody = document.getElementById("combinedDataBody");
+            const csvUrl = "https://daltoncolv.github.io/subsites/test/All_data.csv";
+            
+            fetchCSVData(csvUrl).then(data => {
+                const rows = parseCSV(data);
+
+                // Skip the first row as it contains headers
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i];
+                    if (row.length < 5) continue; // Skip rows with insufficient columns
+
+                    const excelDate = parseFloat(row[0].trim());
+                    const date = excelDateToJSDate(excelDate);
+                    const formattedDate = formatDateString(date);
+                    const page = row[1].trim();
+                    const set = row[2].trim();
+                    const reps = row[3].trim();
+                    const weight = row[4].trim();
+
+                    combinedDataBody.innerHTML += `<tr>
+                        <td>${formattedDate}</td>
+                        <td>${page}</td>
+                        <td>${set}</td>
+                        <td>${reps}</td>
+                        <td>${weight}</td>
+                    </tr>`;
                 }
             });
         }
 
-        function deleteAll() {
-            const confirmDelete = document.getElementById('confirmDeleteAll').checked;
-            if (confirmDelete) {
-                localStorage.removeItem(savedDataKey);
-                document.getElementById('savedDataBody').innerHTML = '';  // Clear table display
-                updateMaxWeights(); // Update max weights table after deletion
-            } else {
-                alert('Please confirm deletion.');
-            }
-        }
-
-        // Load saved data on page load
-        window.onload = function() {
-            const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
-            const savedDataBody = document.getElementById("savedDataBody");
-
-            savedData.forEach(entry => {
-                savedDataBody.insertAdjacentHTML('beforeend', entry.data);
+        function saveData() {
+            // Clear all local storage data
+            localStorage.clear();
+            
+            const tableRows = document.querySelectorAll("#combinedData tbody tr");
+            tableRows.forEach(row => {
+                const cells = row.getElementsByTagName("td");
+                const pageIdentifier = cells[1].textContent.trim();
+                const data = {
+                    date: cells[0].textContent.trim(),
+                    set: cells[2].textContent.trim(),
+                    reps: cells[3].textContent.trim(),
+                    weight: cells[4].textContent.trim()
+                };
+                localStorage.setItem(pageIdentifier, JSON.stringify(data));
             });
 
-            updateMaxWeights();
+            alert("Data saved successfully!");
         }
+
+        document.addEventListener("DOMContentLoaded", loadAllData);
+
+        const confirmCheckbox = document.getElementById("confirmCheckbox");
+        const saveButton = document.getElementById("saveButton");
+
+        confirmCheckbox.addEventListener("change", function() {
+            saveButton.disabled = !this.checked;
+        });
+
+        saveButton.addEventListener("click", saveData);
     </script>
 </body>
 </html>
