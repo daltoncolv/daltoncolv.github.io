@@ -125,9 +125,12 @@
 
         function saveData() {
             // Clear all local storage data
+            console.log("Clearing local storage...");
             localStorage.clear();
             
             const tableRows = document.querySelectorAll("#combinedData tbody tr");
+            console.log(`Found ${tableRows.length} rows to save.`);
+
             tableRows.forEach(row => {
                 const cells = row.getElementsByTagName("td");
                 const pageIdentifier = cells[1].textContent.trim();
@@ -137,6 +140,11 @@
                     reps: cells[3].textContent.trim(),
                     weight: cells[4].textContent.trim()
                 };
+
+                console.log(`Saving data for page: ${pageIdentifier}`);
+                console.log("Data:", data);
+                
+                // Save the data to localStorage
                 localStorage.setItem(pageIdentifier, JSON.stringify(data));
             });
 
