@@ -3,48 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSV Data Display</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <title>All Workout Data</title>
+    <style>
+        body {
+            background-color: black;
+            color: #FFD700;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 80%;
+        }
+        th, td {
+            border: 1px solid #FFD700;
+            padding: 10px;
+            text-align: center;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .controls button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #FFD700;
+            border: none;
+            cursor: pointer;
+            color: black;
+            font-weight: bold;
+        }
+        .controls button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+        .controls input[type="checkbox"] {
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>CSV Data</h1>
-    <div id="csv-content"></div>
+    <table id="combinedData">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Page</th>
+                <th>Set</th>
+                <th>Reps</th>
+                <th>Weight</th>
+            </tr>
+        </thead>
+        <tbody id="combinedDataBody"></tbody>
+    </table>
+    
+    <div class="controls">
+        <input type="checkbox" id="confirmCheckbox">
+        <label for="confirmCheckbox">Confirm</label>
+        <button id="saveButton" disabled>Save Data</button>
+    </div>
 
     <script>
-        // URL to your CSV file
-        const csvUrl = 'https://daltoncolv.github.io/subsites/test/html_test.csv';
+        async function fetchCSVData(url) {
+            const response = await fetch(url);
+            const data = await response.text();
+            return data;
+        }
 
-        // Fetch and parse the CSV data
-        Papa.parse(csvUrl, {
-            download: true,
-            header: false,  // If your CSV has headers
-            complete: function(results) {
-                displayCSV(results.data);
-            }
-        });
+        function parseCSV(data) {
+            const rows = data.split('\n').map(row => row.split(','));
+            return rows;
+        }
 
-        // Function to display CSV data as an HTML table
-        function displayCSV(data) {
-            let table = '<table border="1"><tr>';
+        function excelDateToJSDate(excelDate) {
+            const baseDate = new Date(1900, 0, 1);
+            baseDate.setDate(baseDate.getDate() + (excelDate - 1));
+            return baseDate;
+        }
+
+        function formatDateString(date) {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${month}/${day}/${year}`;
+        }
+
+        function loadAllData() {
+            const combinedDataBody = document.getElementById("combinedDataBody");
+            const csvUrl = "https://daltoncolv.github.io/subsites/test/All_data.csv";
             
-            // Add table headers
-            for (let key in data[0]) {
-                table += `<th>${key}</th>`;
-            }
-            table += '</tr>';
+            fetchCSVData(csvUrl).then(data => {
+                const rows = parseCSV(data);
 
-            // Add table rows
-            data.forEach(row => {
-                table += '<tr>';
-                for (let key in row) {
-                    table += `<td>${row[key]}</td>`;
+                // Skip the first row as it contains headers
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i];
+                    if (row.length < 5) continue; // Skip rows with insufficient columns
+
+                    const excelDate = parseFloat(row[0].trim());
+                    const date = excelDateToJSDate(excelDate);
+                    const formattedDate = formatDateString(date);
+                    const page = row[1].trim();
+                    const set = row[2].trim();
+                    const reps = row[3].trim();
+                    const weight = row[4].trim();
+
+                    combinedDataBody.innerHTML += `<tr>
+                        <td>${formattedDate}</td>
+                        <td>${page}</td>
+                        <td>${set}</td>
+                        <td>${reps}</td>
+                        <td>${weight}</td>
+                    </tr>`;
                 }
-                table += '</tr>';
+            });
+        }
+
+        function saveData() {
+            // Clear all local storage data
+            localStorage.clear();
+            
+            const tableRows = document.querySelectorAll("#combinedData tbody tr");
+            tableRows.forEach(row => {
+                const cells = row.getElementsByTagName("td");
+                const pageIdentifier = cells[1].textContent.trim();
+                const data = {
+                    date: cells[0].textContent.trim(),
+                    set: cells[2].textContent.trim(),
+                    reps: cells[3].textContent.trim(),
+                    weight: cells[4].textContent.trim()
+                };
+                localStorage.setItem(pageIdentifier, JSON.stringify(data));
             });
 
-            table += '</table>';
-            document.getElementById('csv-content').innerHTML = table;
+            alert("Data saved successfully!");
         }
+
+        document.addEventListener("DOMContentLoaded", loadAllData);
+
+        const confirmCheckbox = document.getElementById("confirmCheckbox");
+        const saveButton = document.getElementById("saveButton");
+
+        confirmCheckbox.addEventListener("change", function() {
+            saveButton.disabled = !this.checked;
+        });
+
+        saveButton.addEventListener("click", saveData);
     </script>
 </body>
 </html>
