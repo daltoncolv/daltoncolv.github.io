@@ -76,33 +76,38 @@
             let dataToSave = '';
             let displayData = '';
             const currentDate = new Date().toLocaleDateString(); // Get the current date
-
-            // Collecting the new data
+        
+            console.log("Starting data collection...");
+        
             sets.forEach(set => {
                 const reps = document.getElementById(`reps${set}`).value;
                 const weight = document.getElementById(`weight${set}`).value;
-
+        
                 // Only add non-empty sets
                 if (reps && weight) {
                     dataToSave += `Set ${set}: Reps: ${reps}, Weight: ${weight}\n`;
                     displayData += `<tr><td><input type="checkbox" class="checkbox" /></td><td>${currentDate}</td><td>Set ${set}</td><td>${reps}</td><td>${weight}</td></tr>`;
                 }
             });
-
+        
+            console.log("Collected data:", dataToSave);
+            console.log("Display data:", displayData);
+        
             // Save the data to GitHub and local storage
             if (dataToSave) {
+                console.log("Sending data to GitHub...");
                 fetch(scriptURL)
                     .then(response => response.json())
                     .then(data => {
                         const sha = data.sha; // Get the file SHA
-
+        
                         const dataPayload = {
                             message: "Save workout data",
                             content: btoa(dataToSave),  // Base64 encode the content
                             sha: sha,                   // Include the SHA
                             branch: "main"
                         };
-
+        
                         fetch(scriptURL, {
                             method: 'PUT',
                             headers: {
@@ -113,34 +118,33 @@
                         })
                         .then(response => response.json())
                         .then(() => {
-                            console.log('Success: Data saved');
+                            console.log('Data saved successfully to GitHub');
                             // Insert the new data at the top of the display table
                             const savedDataBody = document.getElementById("savedDataBody");
-                            savedDataBody.insertAdjacentHTML('afterbegin', displayData); // Insert at the top
-
-                            // Save the updated data to local storage for the specific page
+                            savedDataBody.insertAdjacentHTML('afterbegin', displayData);
+        
+                            // Save the updated data to local storage
                             let existingData = localStorage.getItem(savedDataKey);
                             if (existingData) {
                                 existingData = JSON.parse(existingData);
                             } else {
                                 existingData = [];
                             }
-
-                            // Ensure that we are saving the data in a format compatible with the table
+        
+                            // Add new data to the saved data list
                             existingData.unshift({ date: currentDate, data: displayData });
                             localStorage.setItem(savedDataKey, JSON.stringify(existingData));
-
+        
                             // Clear the input fields
                             sets.forEach(set => {
                                 document.getElementById(`reps${set}`).value = '';
                                 document.getElementById(`weight${set}`).value = '';
                             });
-
-                            // Update the max weight table with all the data
+        
                             updateMaxWeights();
                         })
                         .catch(error => {
-                            console.error('Error:', error);
+                            console.error('Error saving data:', error);
                         });
                     });
             }
