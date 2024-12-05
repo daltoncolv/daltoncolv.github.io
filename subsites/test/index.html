@@ -134,6 +134,7 @@
             tableRows.forEach(row => {
                 const cells = row.getElementsByTagName("td");
                 const pageIdentifier = cells[1].textContent.trim();
+                const savedDataKey = `workoutData_${pageIdentifier}`;'
                 const data = {
                     date: cells[0].textContent.trim(),
                     set: cells[2].textContent.trim(),
@@ -145,10 +146,10 @@
                 console.log("Data:", data);
                 
                 // Save the data to localStorage
-                localStorage.setItem(pageIdentifier, JSON.stringify(data));
+                localStorage.setItem(savedDataKey, JSON.stringify(data));
 
                 // Troubleshooting: Log the key and the data stored in localStorage
-                const savedData = localStorage.getItem(pageIdentifier);
+                const savedData = localStorage.getItem(savedDataKey);
                 console.log(`Saved as "${pageIdentifier}": ${savedData}`);
             });
 
