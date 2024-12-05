@@ -178,41 +178,40 @@
 
         function loadAllData() {
             const combinedDataBody = document.getElementById("combinedDataBody");
-
+        
             // Iterate through all pageIdentifiers
             pageIdentifiers.forEach(pageIdentifier => {
                 const savedDataKey = `workoutData_${pageIdentifier}`;
                 const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
-
+        
                 savedData.forEach(entry => {
                     const rows = entry.data;
                     const currentDate = entry.date;
-
-                    // Add each row from the saved data to the table
-                    const wrappedHtml = `<table><tbody>${rows}</tbody></table>`;
+        
+                    // Parse the saved data as HTML and extract rows
                     const parser = new DOMParser();
-                    const doc = parser.parseFromString(wrappedHtml, 'text/html');
+                    const doc = parser.parseFromString(rows, 'text/html');
                     const rowsInData = doc.querySelectorAll('tr');
-
+        
                     rowsInData.forEach(row => {
                         const cells = row.querySelectorAll('td');
                         const set = cells[2].textContent;
-                        const reps = cells[3].textContent;
-                        const weight = cells[4].textContent;
-
+                        const distance = cells[3].textContent;
+                        const time = cells[4].textContent;
+        
                         // Append each row to the combined table without the Select column
                         combinedDataBody.innerHTML += `<tr>
                             <td>${currentDate}</td>
                             <td>${pageIdentifier}</td>
                             <td>${set}</td>
-                            <td>${reps}</td>
-                            <td>${weight}</td>
+                            <td>${distance}</td>
+                            <td>${time}</td>
                         </tr>`;
                     });
                 });
             });
         }
-
+        
         document.addEventListener("DOMContentLoaded", loadAllData);
     </script>
 </body>
