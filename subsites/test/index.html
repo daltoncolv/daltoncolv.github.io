@@ -134,7 +134,7 @@
             tableRows.forEach(row => {
                 const cells = row.getElementsByTagName("td");
                 const pageIdentifier = cells[1].textContent.trim();
-                const savedDataKey = `workoutData_${pageIdentifier}`;'
+                const savedDataKey = `workoutData_${pageIdentifier}`;
                 const data = {
                     date: cells[0].textContent.trim(),
                     set: cells[2].textContent.trim(),
