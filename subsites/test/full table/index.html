@@ -35,12 +35,6 @@
                 <th>Set</th>
                 <th>Reps</th>
                 <th>Weight</th>
-                <th>Time (s)</th>
-                <th>Distance (mi)</th>
-                <th>Time (min)</th>
-                <th>Distance (Floors)</th>
-                <th>Distance (km)</th>
-                <th>Distance (Laps)</th>
             </tr>
         </thead>
         <tbody id="combinedDataBody"></tbody>
@@ -207,12 +201,7 @@
                         const set = cells[2]?.textContent || '';
                         const reps = cells[3]?.textContent || '';
                         const weight = cells[4]?.textContent || '';
-                        const timeSeconds = cells[5]?.textContent || '';
-                        const distanceMiles = cells[6]?.textContent || '';
-                        const timeMinutes = cells[7]?.textContent || '';
-                        const distanceFloors = cells[8]?.textContent || '';
-                        const distanceKm = cells[9]?.textContent || '';
-                        const distanceLaps = cells[10]?.textContent || '';
+
 
                         // Append each row to the combined table without the Select column
                         combinedDataBody.innerHTML += `<tr>
@@ -221,12 +210,7 @@
                             <td>${set}</td>
                             <td>${reps}</td>
                             <td>${weight}</td>
-                            <td>${timeSeconds}</td>
-                            <td>${distanceMiles}</td>
-                            <td>${timeMinutes}</td>
-                            <td>${distanceFloors}</td>
-                            <td>${distanceKm}</td>
-                            <td>${distanceLaps}</td>
+
                         </tr>`;
                     });
                 });
