@@ -132,6 +132,39 @@
             }
         }
 
+        function saveBarbellBenchData() {
+            const rows = document.querySelectorAll("#combinedDataBody tr");
+            const filteredData = [];
+
+            rows.forEach(row => {
+                const cells = row.getElementsByTagName("td");
+                const page = cells[1].innerText;
+                if (page === "Barbell Bench") {
+                    const set = cells[2].innerText;
+                    const reps = cells[3].innerText;
+                    const weight = cells[4].innerText;
+                    filteredData.push({ set, reps, weight });
+                }
+            });
+
+            const fileName = "workoutData_BarbellBench.json";
+            const json = JSON.stringify(filteredData, null, 2);
+            const blob = new Blob([json], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        document.getElementById("confirmCheckbox").addEventListener("change", function () {
+            document.getElementById("saveButton").disabled = !this.checked;
+        });
+
+        document.getElementById("saveButton").addEventListener("click", saveBarbellBenchData);
+
         // Call the function to load data
         loadAllData();
     </script>
