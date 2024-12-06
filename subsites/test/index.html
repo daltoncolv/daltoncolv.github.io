@@ -144,10 +144,15 @@
                     const set = cells[2].innerText;
                     const reps = cells[3].innerText;
                     const weight = cells[4].innerText;
-                    filteredData.push({ set, reps, weight });
+                    const date = cells[0].innerText; // Assuming date is in the first cell
+                    const data = `<tr><td><input type="checkbox" class="checkbox" /></td><td>${date}</td><td>${set}</td><td>${reps}</td><td>${weight}</td></tr>`;
+
+                    // Push both data and date into the filteredData array
+                    filteredData.push({ data, date });
                 }
             });
 
+            // Save the filteredData to local storage
             localStorage.setItem("workoutData_Barbell Bench", JSON.stringify(filteredData));
             alert("Data saved to local storage under the key 'workoutData_Barbell Bench'");
         }
@@ -155,7 +160,15 @@
         function displayBarbellBenchData() {
             const data = localStorage.getItem("workoutData_Barbell Bench");
             if (data) {
-                console.log("Data for Barbell Bench:", JSON.parse(data));
+                const parsedData = JSON.parse(data);
+                console.log("Data for Barbell Bench:", parsedData);
+                
+                // Display the data on the webpage (optional)
+                const combinedDataBody = document.getElementById("combinedDataBody");
+                combinedDataBody.innerHTML = ''; // Clear existing data
+                parsedData.forEach(item => {
+                    combinedDataBody.innerHTML += item.data; // Add the saved rows
+                });
             } else {
                 console.log("No data found for Barbell Bench in local storage.");
             }
