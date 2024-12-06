@@ -147,16 +147,8 @@
                 }
             });
 
-            const fileName = "workoutData_BarbellBench.json";
-            const json = JSON.stringify(filteredData, null, 2);
-            const blob = new Blob([json], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = fileName;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            localStorage.setItem("workoutData_BarbellBench", JSON.stringify(filteredData));
+            alert("Data saved to local storage under the key 'workoutData_BarbellBench'");
         }
 
         document.getElementById("confirmCheckbox").addEventListener("change", function () {
