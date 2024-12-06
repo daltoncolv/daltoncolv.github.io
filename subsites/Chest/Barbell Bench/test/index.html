@@ -148,79 +148,110 @@
     </div>
 
     <script>
+        const scriptURL = 'https://api.github.com/repos/daltoncolv/daltoncolv.github.io/contents/subsites/Chest/Barbell%20Bench/data.txt';
+        const token = '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'; // Your GitHub Token
+    
         const pageIdentifier = "Barbell Bench";  // Unique identifier for this page
         const savedDataKey = `workoutData_${pageIdentifier}`;  // Key for localStorage
-
+    
         function submitData() {
             const sets = ['1', '2', '3', '4', '5', '6'];
             let dataToSave = '';
             let displayData = '';
             const currentDate = new Date().toLocaleDateString(); // Get the current date
-
+    
             // Collecting the new data
             sets.forEach(set => {
                 const reps = document.getElementById(`reps${set}`).value;
                 const weight = document.getElementById(`weight${set}`).value;
-
+    
                 // Only add non-empty sets
                 if (reps && weight) {
                     dataToSave += `Set ${set}: Reps: ${reps}, Weight: ${weight}\n`;
                     displayData += `<tr><td><input type="checkbox" class="checkbox" /></td><td>${currentDate}</td><td>Set ${set}</td><td>${reps}</td><td>${weight}</td></tr>`;
                 }
             });
-
-            // Save the data to local storage
+    
+            // Save the data to GitHub and local storage
             if (dataToSave) {
-                // Insert the new data at the top of the display table
-                const savedDataBody = document.getElementById("savedDataBody");
-                savedDataBody.insertAdjacentHTML('afterbegin', displayData); // Insert at the top
-
-                // Save the updated data to local storage for the specific page
-                let existingData = localStorage.getItem(savedDataKey);
-                if (existingData) {
-                    existingData = JSON.parse(existingData);
-                } else {
-                    existingData = [];
-                }
-
-                existingData.unshift({ date: currentDate, data: displayData }); // Add at the start of the array
-                localStorage.setItem(savedDataKey, JSON.stringify(existingData));
-
-                // Clear the input fields
-                sets.forEach(set => {
-                    document.getElementById(`reps${set}`).value = '';
-                    document.getElementById(`weight${set}`).value = '';
-                });
-
-                // Update the max weight table with all the data
-                updateMaxWeights();
+                fetch(scriptURL)
+                    .then(response => response.json())
+                    .then(data => {
+                        const sha = data.sha; // Get the file SHA
+    
+                        const dataPayload = {
+                            message: "Save workout data",
+                            content: btoa(dataToSave),  // Base64 encode the content
+                            sha: sha,                   // Include the SHA
+                            branch: "main"
+                        };
+    
+                        fetch(scriptURL, {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `token ${token}`,
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(dataPayload),
+                        })
+                        .then(response => response.json())
+                        .then(() => {
+                            console.log('Success: Data saved');
+                            // Insert the new data at the top of the display table
+                            const savedDataBody = document.getElementById("savedDataBody");
+                            savedDataBody.insertAdjacentHTML('afterbegin', displayData); // Insert at the top
+    
+                            // Save the updated data to local storage for the specific page
+                            let existingData = localStorage.getItem(savedDataKey);
+                            if (existingData) {
+                                existingData = JSON.parse(existingData);
+                            } else {
+                                existingData = [];
+                            }
+    
+                            existingData.unshift({ date: currentDate, data: displayData }); // Add at the start of the array
+                            localStorage.setItem(savedDataKey, JSON.stringify(existingData));
+    
+                            // Clear the input fields
+                            sets.forEach(set => {
+                                document.getElementById(`reps${set}`).value = '';
+                                document.getElementById(`weight${set}`).value = '';
+                            });
+    
+                            // Update the max weight table with all the data
+                            updateMaxWeights();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    });
             }
         }
-
+    
         function updateMaxWeights() {
             const maxWeights = {};
             const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
             let maxWeightFor8Reps = 0;
-
+    
             savedData.forEach(entry => {
                 const wrappedHtml = `<table><tbody>${entry.data}</tbody></table>`;
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(wrappedHtml, 'text/html');
                 const rows = doc.querySelectorAll('tr');
-
+    
                 rows.forEach(row => {
                     const cells = row.querySelectorAll('td');
                     const reps = cells[3].textContent;
                     const weight = cells[4].textContent;
-
+    
                     if (!isNaN(reps) && !isNaN(weight)) {
                         const repsInt = parseInt(reps);
                         const weightFloat = parseFloat(weight);
-
+    
                         if (!maxWeights[repsInt] || weightFloat > maxWeights[repsInt]) {
                             maxWeights[repsInt] = weightFloat;
                         }
-
+    
                         // Save max weight for 8 reps
                         if (repsInt === 8 && weightFloat > maxWeightFor8Reps) {
                             maxWeightFor8Reps = weightFloat;
@@ -228,53 +259,62 @@
                     }
                 });
             });
-
-            // Save max weight for 8 reps in the localStorage
-            if (maxWeightFor8Reps > 0) {
-                localStorage.setItem('maxWeightFor8Reps', maxWeightFor8Reps);
-            }
-
-            // Update the table with max weights for each rep range
+    
+            // Save max weight for 8 reps to localStorage with unique ID
+            localStorage.setItem(`maxWeightFor8Reps_${pageIdentifier}`, maxWeightFor8Reps);
+    
             const maxWeightsBody = document.getElementById("maxWeightsBody");
-            maxWeightsBody.innerHTML = '';
-            for (let reps in maxWeights) {
-                maxWeightsBody.insertAdjacentHTML('beforeend', `<tr><td>${reps}</td><td>${maxWeights[reps]}</td></tr>`);
-            }
-        }
-
-        // Load saved data on page load
-        window.onload = function() {
-            const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
-
-            // Display saved data in the table
-            const savedDataBody = document.getElementById("savedDataBody");
-            savedData.forEach(entry => {
-                savedDataBody.insertAdjacentHTML('beforeend', entry.data);
+            maxWeightsBody.innerHTML = ''; // Clear existing data
+    
+            Object.keys(maxWeights).sort((a, b) => a - b).forEach(reps => {
+                const weight = maxWeights[reps];
+                maxWeightsBody.innerHTML += `<tr><td>${reps}</td><td>${weight}</td></tr>`;
             });
-
-            // Load the max weights
+        }
+    
+        function deleteSelected() {
+            const checkboxes = document.querySelectorAll('#savedDataBody .checkbox');
+            const savedDataBody = document.getElementById("savedDataBody");
+    
+            checkboxes.forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    const row = checkbox.closest('tr');
+                    savedDataBody.removeChild(row);
+                }
+            });
+    
+            const updatedData = Array.from(savedDataBody.querySelectorAll('tr')).map(row => row.outerHTML);
+            localStorage.setItem(savedDataKey, JSON.stringify([{ data: updatedData.join('') }]));
+    
             updateMaxWeights();
         }
-
-        // Delete selected data
-        function deleteSelected() {
-            const checkboxes = document.querySelectorAll('#savedDataBody input[type="checkbox"]:checked');
-            checkboxes.forEach(checkbox => {
-                const row = checkbox.closest('tr');
-                row.remove(); // Remove the row from the table
-            });
-        }
-
-        // Delete all data when confirmed
+    
         function deleteAll() {
-            if (document.getElementById("confirmDeleteAll").checked) {
+            const confirmDelete = document.getElementById("confirmDeleteAll").checked;
+            if (confirmDelete) {
                 localStorage.removeItem(savedDataKey);
-                document.getElementById("savedDataBody").innerHTML = ''; // Clear the display table
-                updateMaxWeights(); // Recalculate and update the max weights
-            } else {
-                alert("Please confirm deletion by checking the box.");
+                const savedDataBody = document.getElementById("savedDataBody");
+                savedDataBody.innerHTML = '';
+    
+                const maxWeightsBody = document.getElementById("maxWeightsBody");
+                maxWeightsBody.innerHTML = '';
             }
         }
+    
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
+            const savedDataBody = document.getElementById("savedDataBody");
+    
+            savedData.forEach(entry => {
+                savedDataBody.innerHTML += entry.data;
+            });
+    
+            // Log the local storage data for 'workoutData_Barbell Bench' to the console
+            console.log("Local Storage Data for 'workoutData_Barbell Bench':", savedData);
+    
+            updateMaxWeights();
+        });
     </script>
+
 </body>
 </html>
