@@ -65,6 +65,7 @@
         <input type="checkbox" id="confirmCheckbox">
         <label for="confirmCheckbox">Confirm</label>
         <button id="saveButton" disabled>Save Data</button>
+        <button id="displayButton">Display Barbell Bench Data</button>
     </div>
 
     <script>
@@ -148,7 +149,16 @@
             });
 
             localStorage.setItem("workoutData_Barbell Bench", JSON.stringify(filteredData));
-            alert("Data saved to local storage under the key 'workoutData_BarbellBench'");
+            alert("Data saved to local storage under the key 'workoutData_Barbell Bench'");
+        }
+
+        function displayBarbellBenchData() {
+            const data = localStorage.getItem("workoutData_Barbell Bench");
+            if (data) {
+                console.log("Data for Barbell Bench:", JSON.parse(data));
+            } else {
+                console.log("No data found for Barbell Bench in local storage.");
+            }
         }
 
         document.getElementById("confirmCheckbox").addEventListener("change", function () {
@@ -156,6 +166,7 @@
         });
 
         document.getElementById("saveButton").addEventListener("click", saveBarbellBenchData);
+        document.getElementById("displayButton").addEventListener("click", displayBarbellBenchData);
 
         // Call the function to load data
         loadAllData();
