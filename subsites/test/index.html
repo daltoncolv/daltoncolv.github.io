@@ -69,9 +69,17 @@
 
     <script>
         async function fetchCSVData(url) {
-            const response = await fetch(url);
-            const data = await response.text();
-            return data;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+                const data = await response.text();
+                return data;
+            } catch (error) {
+                console.error("Failed to fetch CSV data:", error);
+                return null;
+            }
         }
 
         function parseCSV(data) {
@@ -92,36 +100,40 @@
             return `${month}/${day}/${year}`;
         }
 
-        function loadAllData() {
+        async function loadAllData() {
             const combinedDataBody = document.getElementById("combinedDataBody");
             const csvUrl = "https://daltoncolv.github.io/subsites/test/All_data.csv";
             
-            fetchCSVData(csvUrl).then(data => {
-                const rows = parseCSV(data);
+            const data = await fetchCSVData(csvUrl);
+            if (!data) return;
 
-                // Skip the first row as it contains headers
-                for (let i = 1; i < rows.length; i++) {
-                    const row = rows[i];
-                    if (row.length < 5) continue; // Skip rows with insufficient columns
+            const rows = parseCSV(data);
 
-                    const excelDate = parseFloat(row[0].trim());
-                    const date = excelDateToJSDate(excelDate);
-                    const formattedDate = formatDateString(date);
-                    const page = row[1].trim();
-                    const set = row[2].trim();
-                    const reps = row[3].trim();
-                    const weight = row[4].trim();
+            // Skip the first row as it contains headers
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                if (row.length < 5) continue; // Skip rows with insufficient columns
 
-                    combinedDataBody.innerHTML += `<tr>
-                        <td>${formattedDate}</td>
-                        <td>${page}</td>
-                        <td>${set}</td>
-                        <td>${reps}</td>
-                        <td>${weight}</td>
-                    </tr>`;
-                }
-            });
+                const excelDate = parseFloat(row[0].trim());
+                const date = excelDateToJSDate(excelDate);
+                const formattedDate = formatDateString(date);
+                const page = row[1].trim();
+                const set = row[2].trim();
+                const reps = row[3].trim();
+                const weight = row[4].trim();
+
+                combinedDataBody.innerHTML += `<tr>
+                    <td>${formattedDate}</td>
+                    <td>${page}</td>
+                    <td>${set}</td>
+                    <td>${reps}</td>
+                    <td>${weight}</td>
+                </tr>`;
+            }
         }
+
+        // Call the function to load data
+        loadAllData();
     </script>
 </body>
 </html>
