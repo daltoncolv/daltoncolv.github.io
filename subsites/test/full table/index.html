@@ -24,9 +24,18 @@
             padding: 10px;
             text-align: center;
         }
+        #copyButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #FFD700;
+            color: black;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+    <button id="copyButton">Copy Table to Clipboard</button>
     <table id="combinedData">
         <thead>
             <tr>
@@ -202,7 +211,6 @@
                         const reps = cells[3]?.textContent || '';
                         const weight = cells[4]?.textContent || '';
 
-
                         // Append each row to the combined table without the Select column
                         combinedDataBody.innerHTML += `<tr>
                             <td>${currentDate}</td>
@@ -210,14 +218,25 @@
                             <td>${set}</td>
                             <td>${reps}</td>
                             <td>${weight}</td>
-
                         </tr>`;
                     });
                 });
             });
         }
 
+        function copyTableToClipboard() {
+            const table = document.getElementById("combinedData");
+            const range = document.createRange();
+            range.selectNode(table);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();
+            alert("Table copied to clipboard!");
+        }
+
         document.addEventListener("DOMContentLoaded", loadAllData);
+        document.getElementById("copyButton").addEventListener("click", copyTableToClipboard);
     </script>
 </body>
 </html>
