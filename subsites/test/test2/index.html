@@ -25,37 +25,29 @@
             text-align: center;
         }
     </style>
-    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
-        let gapiAuthClient;
-
-        function loadGoogleClient() {
-            gapi.load("client:auth2", initClient);
+        function initializeGoogleSignIn() {
+            google.accounts.id.initialize({
+                client_id: '423135200183-138ipibiav8rh9uu6rjd67vge7dqpn37.apps.googleusercontent.com',
+                callback: handleCredentialResponse
+            });
+            google.accounts.id.renderButton(
+                document.getElementById('signin_button'),
+                { theme: 'outline', size: 'large' }
+            );
         }
 
-        function initClient() {
-            gapi.client.init({
-                apiKey: 'AIzaSyCtYfXUsDTtPvsjlyNM6IHBwHzSR6rovz4',
-                clientId: '423135200183-138ipibiav8rh9uu6rjd67vge7dqpn37.apps.googleusercontent.com',
-                discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
-                scope: "https://www.googleapis.com/auth/drive.file"
-            }).then(function () {
-                gapiAuthClient = gapi.auth2.getAuthInstance();
-            });
-        }
-
-        function signIn() {
-            gapiAuthClient.signIn().then(function() {
-                console.log("User signed in!");
-                document.getElementById('upload_button').disabled = false;
-            });
+        function handleCredentialResponse(response) {
+            const jwt = response.credential;
+            console.log("JWT ID token: " + jwt);
+            document.getElementById('upload_button').disabled = false;
         }
 
         function signOut() {
-            gapiAuthClient.signOut().then(function() {
-                console.log("User signed out!");
-                document.getElementById('upload_button').disabled = true;
-            });
+            google.accounts.id.disableAutoSelect();
+            console.log("User signed out!");
+            document.getElementById('upload_button').disabled = true;
         }
 
         function tableToCSV() {
@@ -80,15 +72,10 @@
                 'mimeType': 'text/csv'
             };
 
-            const accessToken = gapi.auth.getToken().access_token; // Get the OAuth token
-
-            const form = new FormData();
-            form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-            form.append('file', file);
-
+            const jwt = google.accounts.id.credential;
             fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', {
                 method: 'POST',
-                headers: new Headers({ 'Authorization': 'Bearer ' + accessToken }),
+                headers: new Headers({ 'Authorization': 'Bearer ' + jwt }),
                 body: form
             }).then((response) => response.json())
               .then((data) => {
@@ -259,7 +246,6 @@
                         const reps = cells[3]?.textContent || '';
                         const weight = cells[4]?.textContent || '';
 
-
                         // Append each row to the combined table without the Select column
                         combinedDataBody.innerHTML += `<tr>
                             <td>${currentDate}</td>
@@ -267,7 +253,6 @@
                             <td>${set}</td>
                             <td>${reps}</td>
                             <td>${weight}</td>
-
                         </tr>`;
                     });
                 });
@@ -275,7 +260,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            loadGoogleClient();
+            initializeGoogleSignIn();
             loadAllData();
         });
     </script>
@@ -293,7 +278,8 @@
         </thead>
         <tbody id="combinedDataBody"></tbody>
     </table>
-    <button onclick="signIn()">Sign In</button>
+    <div id="signin_button"></div>
     <button id="upload_button" onclick="uploadCSVToDrive()" disabled>Upload to Google Drive</button>
+    <button onclick="signOut()">Sign Out</button>
 </body>
 </html>
