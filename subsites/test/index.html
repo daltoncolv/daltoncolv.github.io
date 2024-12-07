@@ -162,30 +162,11 @@
             alert("Data saved to local storage under keys 'workoutData_{Page Name}'");
         }
 
-        function displayData() {
-            const combinedDataBody = document.getElementById("combinedDataBody");
-            combinedDataBody.innerHTML = ''; // Clear existing data
-
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key.startsWith('workoutData_')) {
-                    const data = localStorage.getItem(key);
-                    if (data) {
-                        const parsedData = JSON.parse(data);
-                        parsedData.forEach(item => {
-                            combinedDataBody.innerHTML += item.data; // Add the saved rows
-                        });
-                    }
-                }
-            }
-        }
-
         document.getElementById("confirmCheckbox").addEventListener("change", function () {
             document.getElementById("saveButton").disabled = !this.checked;
         });
 
         document.getElementById("saveButton").addEventListener("click", saveData);
-        document.getElementById("displayButton").addEventListener("click", displayData);
 
         // Call the function to load data
         loadAllData();
