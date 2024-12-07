@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backup Data</title>
+    <style>
+        body {
+            background-color: black;
+            color: #FFD700;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 80%;
+        }
+        th, td {
+            border: 1px solid #FFD700;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script>
+        let gapiAuthClient;
+
+        function loadGoogleClient() {
+            gapi.load("client:auth2", initClient);
+        }
+
+        function initClient() {
+            gapi.client.init({
+                apiKey: 'AIzaSyCtYfXUsDTtPvsjlyNM6IHBwHzSR6rovz4',
+                clientId: '423135200183-138ipibiav8rh9uu6rjd67vge7dqpn37.apps.googleusercontent.com',
+                discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
+                scope: "https://www.googleapis.com/auth/drive.file"
+            }).then(function () {
+                gapiAuthClient = gapi.auth2.getAuthInstance();
+            });
+        }
+
+        function signIn() {
+            gapiAuthClient.signIn().then(function() {
+                console.log("User signed in!");
+                document.getElementById('upload_button').disabled = false;
+            });
+        }
+
+        function signOut() {
+            gapiAuthClient.signOut().then(function() {
+                console.log("User signed out!");
+                document.getElementById('upload_button').disabled = true;
+            });
+        }
+
+        function tableToCSV() {
+            const table = document.getElementById("combinedData");
+            const rows = table.querySelectorAll("tr");
+            let csvContent = "";
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll("th, td");
+                const rowContent = Array.from(cells).map(cell => cell.textContent).join(",");
+                csvContent += rowContent + "\r\n";
+            });
+
+            return csvContent;
+        }
+
+        function uploadCSVToDrive() {
+            const csvContent = tableToCSV();
+            const file = new Blob([csvContent], { type: 'text/csv' });
+            const metadata = {
+                'name': 'workout_data.csv',
+                'mimeType': 'text/csv'
+            };
+
+            const accessToken = gapi.auth.getToken().access_token; // Get the OAuth token
+
+            const form = new FormData();
+            form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+            form.append('file', file);
+
+            fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', {
+                method: 'POST',
+                headers: new Headers({ 'Authorization': 'Bearer ' + accessToken }),
+                body: form
+            }).then((response) => response.json())
+              .then((data) => {
+                console.log('File uploaded successfully:', data);
+            }).catch((error) => {
+                console.error('Error uploading file:', error);
+            });
+        }
+
+        const pageIdentifiers = [
+            "Barbell Bench", // Add more page identifiers here
+            "Dumbbell Bench",
+            "Smith Machine Bench",
+            "Barbell Incline",
+            "Dumbbell Incline",
+            "Smith Machine Incline",
+            "Barbell Decline Bench",
+            "Pec-Deck Flies",
+            "Incline Cable Flies",
+            "Flat Cable Flies",
+            "Decline Cable Flies",
+            "Incline Dumbbell Flies",
+            "Flat Dumbbell Flies",
+            "Seated Incline Cable Flies",
+            "Seated Flat Cable Flies",
+            "Incline Chest Machine",
+            "Flat Chest Machine",
+            "Decline Chest Machine",
+            "Barbell Bent Over Rows",
+            "Dumbbell Bent Over Rows",
+            "Smith Machine Bent Over Rows",
+            "Wide Machine Rows",
+            "Wide Cable Rows",
+            "Narrow Machine Rows",
+            "Narrow Cable Rows",
+            "Wide Cable Lat Pulldowns",
+            "Narrow Cable Lat Pulldowns",
+            "Machine Lat Pulldowns",
+            "Pull-Ups",
+            "Chin-Ups",
+            "Cable Pull-Over",
+            "Wide T-Bar Rows",
+            "Narrow T-Bar Rows",
+            "Seated Barbell Press",
+            "Seated Dumbbell Press",
+            "Seated Smith Machine Press",
+            "Standing Barbell Press",
+            "Standing Dumbbell Press",
+            "Seated Arnold Press",
+            "Standing Arnold Press",
+            "Dumbbell Lateral Raise",
+            "Cable Lateral Raise",
+            "Dumbbell Front Raise",
+            "Cable Front Raise",
+            "Rope Front Raise",
+            "Dumbbell Rear Delt Flies",
+            "Cable Rear Delt Flies",
+            "Face-Pulls",
+            "Rear Delt Pec-Deck",
+            "Around The World",
+            "Shoulder Machine Press",
+            "Dips",
+            "Machine Dips",
+            "Bench Dips",
+            "Barbell Skull-Crushers",
+            "Dumbbell Skull-Crushers",
+            "Smith Machine Skull-Crushers",
+            "Close Grip Barbell Bench",
+            "Close Grip Smith Machine Bench",
+            "Seated Dumbbell Overhead Extensions",
+            "Standing Dumbbell Overhead Extensions",
+            "Rope Overhead Extensions",
+            "Bar Overhead Extensions",
+            "Rope Tricep Pushdowns",
+            "Bar Tricep Pushdowns",
+            "Cable Single Arm Extensions",
+            "Dumbbell Kickback",
+            "Cable Kickback",
+            "Standing EZ Bar Curl",
+            "Standing Dumbbell Curl",
+            "Standing Dumbbell Hammer Curl",
+            "Seated Dumbbell Curl",
+            "Seated Dumbbell Hammer Curl",
+            "Seated Incline Curl",
+            "Seated Incline Hammer Curl",
+            "EZ Bar Preacher Curls",
+            "Single Arm Preacher Curl",
+            "Rope Hammer Curl",
+            "Cable Bar Curl",
+            "Spider Curl",
+            "Concentration Curl",
+            "Waiter Curl",
+            "Rotating Curl",
+            "Single Arm Cable Curl",
+            "Barbell Squat",
+            "Heel Elevated Barbell Squat",
+            "Front Squat",
+            "Heel Elevated Front Squat",
+            "Smith Machine Squat",
+            "Heel Elevated Smith Machine Squat",
+            "Goblet Squat",
+            "Heel Elevated Goblet Squat",
+            "Hack Squat",
+            "Bulgarian Split Squat",
+            "Pendulum Squat",
+            "Leg Press",
+            "Leg Extensions",
+            "Dumbbell Lunge",
+            "Barbell Lunge",
+            "Barbell Deadlift",
+            "Dumbbell Deadlift",
+            "Barbell RDL",
+            "Dumbbell RDL",
+            "Smith Machine RDL",
+            "Sitting Hamstring Curls",
+            "Lying Hamstring Curls",
+            "Hamstring Curl Machine",
+            "Bulgarian Split Squat",
+            "Glute Ham Raise",
+            "Barbell Calf Raises",
+            "Smith Machine Calf Raises",
+            "Dumbbell Calf Raises",
+            "Seated Calf Raises",
+            "Machine Calf Raises",
+            "Sit-Ups",
+            "Decline Sit-Ups",
+            "Cable Crunches",
+            "Machine Crunches",
+            "Leg Lift Crunches",
+            "Leg Raises",
+            "Knee Raises",
+            "Russian Twists",
+            "Bicycle Crunches",
+            "Plank",
+            "Jogging",
+            "Walking",
+            "Stair Master",
+            "Bike",
+            "Row Machine",
+            "Jump Rope",
+            "Swimming",
+            "Battle Ropes"
+        ];
+
+        function loadAllData() {
+            const combinedDataBody = document.getElementById("combinedDataBody");
+
+            // Iterate through all pageIdentifiers
+            pageIdentifiers.forEach(pageIdentifier => {
+                const savedDataKey = `workoutData_${pageIdentifier}`;
+                const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
+
+                savedData.forEach(entry => {
+                    const rows = entry.data;
+                    const currentDate = entry.date;
+
+                    // Add each row from the saved data to the table
+                    const wrappedHtml = `<table><tbody>${rows}</tbody></table>`;
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(wrappedHtml, 'text/html');
+                    const rowsInData = doc.querySelectorAll('tr');
+
+                    rowsInData.forEach(row => {
+                        const cells = row.querySelectorAll('td');
+
+                        // Prepare data with default values for new columns
+                        const set = cells[2]?.textContent || '';
+                        const reps = cells[3]?.textContent || '';
+                        const weight = cells[4]?.textContent || '';
+
+
+                        // Append each row to the combined table without the Select column
+                        combinedDataBody.innerHTML += `<tr>
+                            <td>${currentDate}</td>
+                            <td>${pageIdentifier}</td>
+                            <td>${set}</td>
+                            <td>${reps}</td>
+                            <td>${weight}</td>
+
+                        </tr>`;
+                    });
+                });
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            loadGoogleClient();
+            loadAllData();
+        });
+    </script>
+</head>
+<body>
+    <table id="combinedData">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Page</th>
+                <th>Set</th>
+                <th>Reps</th>
+                <th>Weight</th>
+            </tr>
+        </thead>
+        <tbody id="combinedDataBody"></tbody>
+    </table>
+    <button onclick="signIn()">Sign In</button>
+    <button id="upload_button" onclick="uploadCSVToDrive()" disabled>Upload to Google Drive</button>
+</body>
+</html>
