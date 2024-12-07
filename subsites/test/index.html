@@ -134,6 +134,9 @@
         }
 
         function saveBarbellBenchData() {
+            // Clear all local storage data
+            localStorage.clear();
+
             const rows = document.querySelectorAll("#combinedDataBody tr");
             const filteredData = [];
 
