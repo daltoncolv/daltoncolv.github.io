@@ -1,75 +1,120 @@
-<script>
-    const pageIdentifiers = [
-        "Barbell Bench", // Add more page identifiers here
-        "Dumbbell Bench",
-        // Include all your other page identifiers here
-    ];
-
-    function countDaysLoggedPerYear() {
-        const uniqueDates = new Set();
-        const yearlyCounts = {};
-
-        // Iterate through all pageIdentifiers
-        pageIdentifiers.forEach(pageIdentifier => {
-            const savedDataKey = `workoutData_${pageIdentifier}`;
-            const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
-
-            console.log(`Data for ${pageIdentifier}:`, savedData); // Debugging
-
-            // Collect unique dates
-            savedData.forEach(entry => {
-                if (entry.data) {
-                    // Parse the HTML string in entry.data
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(entry.data, "text/html");
-                    
-                    // Find all date cells (assuming dates are in the second column of each row)
-                    const dateCells = doc.querySelectorAll("td:nth-child(2)");
-                    dateCells.forEach(cell => {
-                        const dateText = cell.textContent.trim(); // Extract the date
-                        if (!isNaN(Date.parse(dateText))) { // Validate the date
-                            console.log(`Adding date: ${dateText}`); // Debugging
-                            uniqueDates.add(dateText);
-                        } else {
-                            console.warn(`Invalid date found: ${dateText}`); // Debugging
-                        }
-                    });
-                } else {
-                    console.warn(`Invalid or missing data:`, entry); // Debugging
-                }
-            });
-        });
-
-        // Count days per year
-        uniqueDates.forEach(date => {
-            const year = new Date(date).getFullYear();
-            yearlyCounts[year] = (yearlyCounts[year] || 0) + 1;
-        });
-
-        console.log(`Yearly Counts:`, yearlyCounts); // Debugging
-        return yearlyCounts;
-    }
-
-    function renderYearlyDataTable() {
-        const yearlyDataBody = document.getElementById("yearlyDataBody");
-        const yearlyCounts = countDaysLoggedPerYear();
-
-        // Populate the table with yearly data
-        Object.keys(yearlyCounts).sort().forEach(year => {
-            const daysLogged = yearlyCounts[year];
-            yearlyDataBody.innerHTML += `<tr>
-                <td>${year}</td>
-                <td>${daysLogged}</td>
-            </tr>`;
-        });
-
-        // Handle case when no valid data is found
-        if (Object.keys(yearlyCounts).length === 0) {
-            yearlyDataBody.innerHTML = `<tr>
-                <td colspan="2">No valid data available</td>
-            </tr>`;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yearly Workout Data</title>
+    <style>
+        body {
+            background-color: black;
+            color: #FFD700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
         }
-    }
-
-    document.addEventListener("DOMContentLoaded", renderYearlyDataTable);
-</script>
+        table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 80%;
+        }
+        th, td {
+            border: 1px solid #FFD700;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Yearly Workout Data</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Days Logged</th>
+            </tr>
+        </thead>
+        <tbody id="yearlyDataBody">
+            <!-- Data will be populated here by the script -->
+        </tbody>
+    </table>
+    <script>
+        // Place the JavaScript script here
+    </script>
+        const pageIdentifiers = [
+            "Barbell Bench", // Add more page identifiers here
+            "Dumbbell Bench",
+            // Include all your other page identifiers here
+        ];
+    
+        function countDaysLoggedPerYear() {
+            const uniqueDates = new Set();
+            const yearlyCounts = {};
+    
+            // Iterate through all pageIdentifiers
+            pageIdentifiers.forEach(pageIdentifier => {
+                const savedDataKey = `workoutData_${pageIdentifier}`;
+                const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
+    
+                console.log(`Data for ${pageIdentifier}:`, savedData); // Debugging
+    
+                // Collect unique dates
+                savedData.forEach(entry => {
+                    if (entry.data) {
+                        // Parse the HTML string in entry.data
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(entry.data, "text/html");
+                        
+                        // Find all date cells (assuming dates are in the second column of each row)
+                        const dateCells = doc.querySelectorAll("td:nth-child(2)");
+                        dateCells.forEach(cell => {
+                            const dateText = cell.textContent.trim(); // Extract the date
+                            if (!isNaN(Date.parse(dateText))) { // Validate the date
+                                console.log(`Adding date: ${dateText}`); // Debugging
+                                uniqueDates.add(dateText);
+                            } else {
+                                console.warn(`Invalid date found: ${dateText}`); // Debugging
+                            }
+                        });
+                    } else {
+                        console.warn(`Invalid or missing data:`, entry); // Debugging
+                    }
+                });
+            });
+    
+            // Count days per year
+            uniqueDates.forEach(date => {
+                const year = new Date(date).getFullYear();
+                yearlyCounts[year] = (yearlyCounts[year] || 0) + 1;
+            });
+    
+            console.log(`Yearly Counts:`, yearlyCounts); // Debugging
+            return yearlyCounts;
+        }
+    
+        function renderYearlyDataTable() {
+            const yearlyDataBody = document.getElementById("yearlyDataBody");
+            const yearlyCounts = countDaysLoggedPerYear();
+    
+            // Populate the table with yearly data
+            Object.keys(yearlyCounts).sort().forEach(year => {
+                const daysLogged = yearlyCounts[year];
+                yearlyDataBody.innerHTML += `<tr>
+                    <td>${year}</td>
+                    <td>${daysLogged}</td>
+                </tr>`;
+            });
+    
+            // Handle case when no valid data is found
+            if (Object.keys(yearlyCounts).length === 0) {
+                yearlyDataBody.innerHTML = `<tr>
+                    <td colspan="2">No valid data available</td>
+                </tr>`;
+            }
+        }
+    
+        document.addEventListener("DOMContentLoaded", renderYearlyDataTable);
+    </script>
+</body>
+</html>
