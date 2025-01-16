@@ -51,15 +51,26 @@
 
             pageIdentifiers.forEach(pageIdentifier => {
                 const savedDataKey = `workoutData_${pageIdentifier}`;
-                const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
+                const savedData = localStorage.getItem(savedDataKey);
 
-                savedData.forEach(entry => {
-                    if (entry.date && !isNaN(Date.parse(entry.date))) {
-                        allDates.push(entry.date);
-                    } else {
-                        console.warn("Invalid or missing date:", entry);
-                    }
-                });
+                if (savedData) {
+                    // Parse the HTML content to extract dates
+                    const tempDiv = document.createElement("div");
+                    tempDiv.innerHTML = savedData; // Parse the HTML rows
+
+                    const rows = tempDiv.querySelectorAll("tr");
+                    rows.forEach(row => {
+                        const cells = row.querySelectorAll("td");
+                        if (cells.length > 1) {
+                            const date = cells[1].textContent.trim(); // Assume the 2nd cell contains the date
+                            if (date && !isNaN(Date.parse(date))) {
+                                allDates.push(date);
+                            } else {
+                                console.warn("Invalid or missing date:", row);
+                            }
+                        }
+                    });
+                }
             });
 
             return allDates;
