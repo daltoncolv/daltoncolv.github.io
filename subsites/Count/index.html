@@ -53,11 +53,16 @@
                 const savedDataKey = `workoutData_${pageIdentifier}`;
                 const savedData = JSON.parse(localStorage.getItem(savedDataKey)) || [];
 
+                console.log(`Data for ${pageIdentifier}:`, savedData); // Debugging
+
                 // Collect unique dates
                 savedData.forEach(entry => {
                     const entryDate = entry.date; // Assuming the date is stored in "YYYY-MM-DD" format
                     if (entryDate && !isNaN(Date.parse(entryDate))) { // Validate the date
+                        console.log(`Adding date: ${entryDate}`); // Debugging
                         uniqueDates.add(entryDate);
+                    } else {
+                        console.warn(`Invalid or missing date:`, entry); // Debugging
                     }
                 });
             });
@@ -68,6 +73,7 @@
                 yearlyCounts[year] = (yearlyCounts[year] || 0) + 1;
             });
 
+            console.log(`Yearly Counts:`, yearlyCounts); // Debugging
             return yearlyCounts;
         }
 
