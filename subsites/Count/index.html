@@ -56,7 +56,9 @@
                 // Collect unique dates
                 savedData.forEach(entry => {
                     const entryDate = entry.date; // Assuming the date is stored in "YYYY-MM-DD" format
-                    uniqueDates.add(entryDate);
+                    if (entryDate && !isNaN(Date.parse(entryDate))) { // Validate the date
+                        uniqueDates.add(entryDate);
+                    }
                 });
             });
 
@@ -81,6 +83,13 @@
                     <td>${daysLogged}</td>
                 </tr>`;
             });
+
+            // Handle case when no valid data is found
+            if (Object.keys(yearlyCounts).length === 0) {
+                yearlyDataBody.innerHTML = `<tr>
+                    <td colspan="2">No valid data available</td>
+                </tr>`;
+            }
         }
 
         document.addEventListener("DOMContentLoaded", renderYearlyDataTable);
