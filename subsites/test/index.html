@@ -106,24 +106,22 @@
             
             const data = await fetchCSVData(csvUrl);
             if (!data) return;
-
+        
             const rows = parseCSV(data);
-
+        
             // Skip the first row as it contains headers
             for (let i = 1; i < rows.length; i++) {
                 const row = rows[i];
                 if (row.length < 5) continue; // Skip rows with insufficient columns
-
-                const excelDate = parseFloat(row[0].trim());
-                const date = excelDateToJSDate(excelDate);
-                const formattedDate = formatDateString(date);
+        
+                const date = row[0].trim(); // Dates are already in string format
                 const page = row[1].trim();
                 const set = row[2].trim();
                 const reps = row[3].trim();
                 const weight = row[4].trim();
-
+        
                 combinedDataBody.innerHTML += `<tr>
-                    <td>${formattedDate}</td>
+                    <td>${date}</td>
                     <td>${page}</td>
                     <td>${set}</td>
                     <td>${reps}</td>
